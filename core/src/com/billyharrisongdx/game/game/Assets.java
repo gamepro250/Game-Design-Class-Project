@@ -1,10 +1,11 @@
 /**
- * Name: Billy Harrison
+ * Author: Billy Harrison
+ *
+ * Date: 9/15/16
  *
  * Class: Game Design
- *
- * Date: 9/14/16
  */
+
 package com.billyharrisongdx.game.game;
 
 import com.badlogic.gdx.Gdx ;
@@ -12,21 +13,19 @@ import com.badlogic.gdx.assets.AssetDescriptor ;
 import com.badlogic.gdx.assets.AssetErrorListener ;
 import com.badlogic.gdx.assets.AssetManager ;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas ;
-import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Disposable ;
 import com.billyharrisongdx.game.util.Constants ;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion ;
 import com.badlogic.gdx.graphics.Texture ;
 import com.badlogic.gdx.graphics.Texture.TextureFilter ;
 
-public class Assets implements Disposable, AssetErrorListener {
+public class Assets implements Disposable, AssetErrorListener
+{
 	public static final String TAG = Assets.class.getName() ;
 
-	public static final Assets instance = new Assets() ;
+	public static Assets instance = new Assets() ;
 
 	private AssetManager assetManager ;
-
-	// singleton: prevent instantiation from other classes
-	private Assets() {}
 
 	public AssetBunny bunny ;
 	public AssetRock rock ;
@@ -34,44 +33,47 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetFeather feather ;
 	public AssetLevelDecoration levelDecoration ;
 
-	/**
-	 * initializes asset manager, loading in all assets
-	 * @param assetmanager
-	 */
-	public void init (AssetManager assetmanager)
+	// singleton: prevent instantiation from other classes
+	private Assets() {}
+
+	public void init (AssetManager assetManager)
 	{
 		this.assetManager = assetManager ;
+
 		// set asset manager error handler
 		assetManager.setErrorListener(this) ;
+
 		// load texture atlas
-		assetManager.load(Constants.TEXTURE_ATLAS_OBJECTS, TextureAtlas.class) ;
+		assetManager.load(Constants.TEXTURE_ATLAS_OBJECTS,TextureAtlas.class) ;
+
 		// start loading assets and wait until finished
-		assetManager.finishLoading() ;
+		assetManager.finishLoading();
+
 		Gdx.app.debug(TAG,  "# of assets loaded: " + assetManager.getAssetNames().size) ;
-		for (String a : assetManager.getAssetNames())
+
+		for (String a: assetManager.getAssetNames())
 		{
 			Gdx.app.debug(TAG, "asset: " + a) ;
 		}
 
 		TextureAtlas atlas = assetManager.get(Constants.TEXTURE_ATLAS_OBJECTS) ;
-		// enable texture filtering for pixel smoothing
-		for(Texture t : atlas.getTextures())
+
+		// Enable texture filtering for pixel smoothing.
+		for (Texture t : atlas.getTextures())
 		{
 			t.setFilter(TextureFilter.Linear, TextureFilter.Linear) ;
 		}
 
-		//create game resource objects
+		// create game resource objects
 		bunny = new AssetBunny(atlas) ;
 		rock = new AssetRock(atlas) ;
 		goldCoin = new AssetGoldCoin(atlas) ;
 		feather = new AssetFeather(atlas) ;
 		levelDecoration = new AssetLevelDecoration(atlas) ;
-	}
-
-
+}
 
 	/**
-	 * Unloads the images when they are no longer needed
+	 * Releases all assets when they are no longer needed
 	 */
 	@Override
 	public void dispose()
@@ -80,29 +82,22 @@ public class Assets implements Disposable, AssetErrorListener {
 	}
 
 	/**
-	 * Handle any errors thrown by the asset mangaer
+	 * Error handler
 	 */
-	public void error (String filename, Class type, Throwable throwable)
-	{
-		Gdx.app.error(TAG,  "Couldn't load asset '" + filename + "'", (Exception)throwable) ;
-	}
-
 	@Override
 	public void error(AssetDescriptor asset, Throwable throwable)
 	{
-		Gdx.app.error(TAG, "COuldn't load asset '" + asset.fileName + "'", (Exception)throwable) ;
+		Gdx.app.error(TAG, "Wouldn't load asset '" + asset.fileName + "'", (Exception) throwable);
 	}
 
 	/**
-	 *
-	 * following classes each locate assets on atlas and stores them in cache memory
-	 *
+	 * Asset classes that allow structuring and caching of game assets
 	 */
 	public class AssetBunny
 	{
-		public final AtlasRegion head ;
+		public final AtlasRegion head;
 
-		public AssetBunny(TextureAtlas atlas)
+		public AssetBunny (TextureAtlas atlas)
 		{
 			head = atlas.findRegion("bunny_head") ;
 		}
@@ -110,10 +105,10 @@ public class Assets implements Disposable, AssetErrorListener {
 
 	public class AssetRock
 	{
-		public final AtlasRegion edge ;
-		public final AtlasRegion middle ;
+		public final AtlasRegion edge;
+		public final AtlasRegion middle;
 
-		public AssetRock(TextureAtlas atlas)
+		public AssetRock (TextureAtlas atlas)
 		{
 			edge = atlas.findRegion("rock_edge") ;
 			middle = atlas.findRegion("rock_middle") ;
@@ -124,19 +119,20 @@ public class Assets implements Disposable, AssetErrorListener {
 	{
 		public final AtlasRegion goldCoin ;
 
-		public AssetGoldCoin(TextureAtlas atlas)
+		public AssetGoldCoin (TextureAtlas atlas)
 		{
 			goldCoin = atlas.findRegion("item_gold_coin") ;
 		}
 	}
 
+
 	public class AssetFeather
 	{
 		public final AtlasRegion feather ;
 
-		public AssetFeather(TextureAtlas atlas)
+		public AssetFeather (TextureAtlas atlas)
 		{
-			feather = atlas.findRegion("item_gold_coin") ;
+			feather = atlas.findRegion("item_feather") ;
 		}
 	}
 
@@ -149,7 +145,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		public final AtlasRegion mountainRight ;
 		public final AtlasRegion waterOverlay ;
 
-		public AssetLevelDecoration(TextureAtlas atlas)
+		public AssetLevelDecoration (TextureAtlas atlas)
 		{
 			cloud01 = atlas.findRegion("cloud01") ;
 			cloud02 = atlas.findRegion("cloud02") ;
@@ -161,11 +157,6 @@ public class Assets implements Disposable, AssetErrorListener {
 	}
 
 }
-
-
-
-
-
 
 
 
