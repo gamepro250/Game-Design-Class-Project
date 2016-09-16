@@ -29,7 +29,7 @@ public class DesktopLauncher {
 			settings.maxHeight = 1024 ;
 			settings.duplicatePadding = false ;
 			settings.debug = drawDebugOutline ;
-			TexturePacker.process(settings, "assets-raw/images", "../core/assets/images", "canyonbunny.pack") ; // Creates atlas in desired location
+			TexturePacker.process(settings, "assets-raw/images", "../core/assets/images", "mygame.pack") ; // Creates atlas in desired location
 		}
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();

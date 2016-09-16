@@ -27,11 +27,10 @@ public class Assets implements Disposable, AssetErrorListener
 
 	private AssetManager assetManager ;
 
-	public AssetBunny bunny ;
-	public AssetRock rock ;
-	public AssetGoldCoin goldCoin ;
-	public AssetFeather feather ;
-	public AssetLevelDecoration levelDecoration ;
+	public AssetCharacter character ;
+	public AssetFire fire ;
+	public AssetGround ground ;
+	public AssetLava lava ;
 
 	// singleton: prevent instantiation from other classes
 	private Assets() {}
@@ -65,11 +64,10 @@ public class Assets implements Disposable, AssetErrorListener
 		}
 
 		// create game resource objects
-		bunny = new AssetBunny(atlas) ;
-		rock = new AssetRock(atlas) ;
-		goldCoin = new AssetGoldCoin(atlas) ;
-		feather = new AssetFeather(atlas) ;
-		levelDecoration = new AssetLevelDecoration(atlas) ;
+		character = new AssetCharacter(atlas) ;
+		fire = new AssetFire(atlas) ;
+		ground = new AssetGround(atlas) ;
+		lava = new AssetLava(atlas) ;
 }
 
 	/**
@@ -93,69 +91,46 @@ public class Assets implements Disposable, AssetErrorListener
 	/**
 	 * Asset classes that allow structuring and caching of game assets
 	 */
-	public class AssetBunny
+	public class AssetCharacter
 	{
-		public final AtlasRegion head;
+		public final AtlasRegion character;
 
-		public AssetBunny (TextureAtlas atlas)
+		public AssetCharacter (TextureAtlas atlas)
 		{
-			head = atlas.findRegion("bunny_head") ;
+			character = atlas.findRegion("Character") ;
 		}
 	}
 
-	public class AssetRock
+	public class AssetFire
 	{
-		public final AtlasRegion edge;
-		public final AtlasRegion middle;
+		public final AtlasRegion fire ;
 
-		public AssetRock (TextureAtlas atlas)
+		public AssetFire (TextureAtlas atlas)
 		{
-			edge = atlas.findRegion("rock_edge") ;
-			middle = atlas.findRegion("rock_middle") ;
+			fire = atlas.findRegion("Fire") ;
 		}
 	}
 
-	public class AssetGoldCoin
+	public class AssetGround
 	{
-		public final AtlasRegion goldCoin ;
+		public final AtlasRegion ground ;
 
-		public AssetGoldCoin (TextureAtlas atlas)
+		public AssetGround (TextureAtlas atlas)
 		{
-			goldCoin = atlas.findRegion("item_gold_coin") ;
+			ground = atlas.findRegion("Ground") ;
 		}
 	}
 
 
-	public class AssetFeather
+	public class AssetLava
 	{
-		public final AtlasRegion feather ;
+		public final AtlasRegion lava ;
 
-		public AssetFeather (TextureAtlas atlas)
+		public AssetLava (TextureAtlas atlas)
 		{
-			feather = atlas.findRegion("item_feather") ;
+			lava = atlas.findRegion("Lava") ;
 		}
 	}
-
-	public class AssetLevelDecoration
-	{
-		public final AtlasRegion cloud01 ;
-		public final AtlasRegion cloud02 ;
-		public final AtlasRegion cloud03 ;
-		public final AtlasRegion mountainLeft ;
-		public final AtlasRegion mountainRight ;
-		public final AtlasRegion waterOverlay ;
-
-		public AssetLevelDecoration (TextureAtlas atlas)
-		{
-			cloud01 = atlas.findRegion("cloud01") ;
-			cloud02 = atlas.findRegion("cloud02") ;
-			cloud03 = atlas.findRegion("cloud03") ;
-			mountainLeft = atlas.findRegion("mountain_left") ;
-			mountainRight = atlas.findRegion("mountain_right") ;
-			waterOverlay = atlas.findRegion("water_overlay") ;
-		}
-	}
-
 }
 
 

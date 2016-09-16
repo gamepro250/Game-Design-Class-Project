@@ -19,8 +19,7 @@ import com.billyharrisongdx.game.game.Assets ;
 
 public class CanyonBunnyMain implements ApplicationListener
 {
-		private static final String TAG =
-		CanyonBunnyMain.class.getName() ;
+		private static final String TAG = CanyonBunnyMain.class.getName() ;
 
 		private WorldController worldController ;
 		private WorldRenderer worldRenderer ;
