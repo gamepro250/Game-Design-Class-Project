@@ -18,6 +18,7 @@ import com.billyharrisongdx.game.util.Constants ;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion ;
 import com.badlogic.gdx.graphics.Texture ;
 import com.badlogic.gdx.graphics.Texture.TextureFilter ;
+import com.badlogic.gdx.graphics.g2d.BitmapFont ;
 
 public class Assets implements Disposable, AssetErrorListener
 {
@@ -32,9 +33,34 @@ public class Assets implements Disposable, AssetErrorListener
 	public AssetGoldCoin goldCoin ;
 	public AssetFeather feather ;
 	public AssetLevelDecoration levelDecoration ;
+	public AssetFonts fonts ;
 
 	// singleton: prevent instantiation from other classes
 	private Assets() {}
+
+	public class AssetFonts
+	{
+		public final BitmapFont defaultSmall ;
+		public final BitmapFont defaultNormal ;
+		public final BitmapFont defaultBig ;
+
+		public AssetFonts()
+		{
+			// Create three fonts using Libgdx's 15px bitmap font
+			defaultSmall = new BitmapFont(Gdx.files.internal("../core/assets/images/arial-15.fnt"), true) ;
+			defaultNormal = new BitmapFont(Gdx.files.internal("../core/assets/images/arial-15.fnt"), true) ;
+			defaultBig = new BitmapFont(Gdx.files.internal("../core/assets/images/arial-15.fnt"), true) ;
+
+			// Set font sizes
+			defaultSmall.getData().setScale(0.75f) ;
+			defaultNormal.getData().setScale(1.0f) ;
+			defaultBig.getData().setScale(2.0f) ;
+			// Enable linear texture filtering for smooth fonts
+			defaultSmall.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			defaultNormal.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			defaultBig.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		}
+	}
 
 	public void init (AssetManager assetManager)
 	{
@@ -65,6 +91,7 @@ public class Assets implements Disposable, AssetErrorListener
 		}
 
 		// create game resource objects
+		fonts = new AssetFonts() ;
 		bunny = new AssetBunny(atlas) ;
 		rock = new AssetRock(atlas) ;
 		goldCoin = new AssetGoldCoin(atlas) ;
@@ -79,6 +106,9 @@ public class Assets implements Disposable, AssetErrorListener
 	public void dispose()
 	{
 		assetManager.dispose() ;
+		fonts.defaultSmall.dispose() ;
+		fonts.defaultNormal.dispose() ;
+		fonts.defaultBig.dispose() ;
 	}
 
 	/**
@@ -155,7 +185,6 @@ public class Assets implements Disposable, AssetErrorListener
 			waterOverlay = atlas.findRegion("water_overlay") ;
 		}
 	}
-
 }
 
 

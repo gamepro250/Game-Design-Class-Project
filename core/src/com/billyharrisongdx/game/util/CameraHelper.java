@@ -9,9 +9,9 @@
 package com.billyharrisongdx.game.util ;
 
 import com.badlogic.gdx.graphics.OrthographicCamera ;
-import com.badlogic.gdx.graphics.g2d.Sprite ;
 import com.badlogic.gdx.math.MathUtils ;
 import com.badlogic.gdx.math.Vector2 ;
+import com.billyharrisongdx.game.game.objects.AbstractGameObject ;
 
 public class CameraHelper
 {
@@ -22,7 +22,7 @@ public class CameraHelper
 
 	private Vector2 position ;
 	private float zoom ;
-	private Sprite target ;
+	private AbstractGameObject target ;
 
 	public CameraHelper()
 	{
@@ -38,8 +38,8 @@ public class CameraHelper
 		if(!hasTarget())
 			return ;
 
-		position.x = target.getX() + target.getOriginX() ;
-		position.y = target.getY() + target.getOriginY() ;
+		position.x = target.position.x + target.origin.x ;
+		position.y = target.position.y = target.origin.y ;
 	}
 
 	/**
@@ -50,7 +50,10 @@ public class CameraHelper
 		this.position.set(x, y) ;
 	}
 
-
+	/**
+	 * Get the current position of the camera
+	 * @return position
+	 */
 	public Vector2 getPosition()
 	{
 		return position ;
@@ -83,7 +86,7 @@ public class CameraHelper
 	/**
 	 * Gives camera a target to follow
 	 */
-	public void setTarget(Sprite target)
+	public void setTarget(AbstractGameObject target)
 	{
 		this.target = target ;
 	}
@@ -91,7 +94,7 @@ public class CameraHelper
 	/**
 	 * Returns cameras current target
 	 */
-	public Sprite getTarget()
+	public AbstractGameObject getTarget()
 	{
 		return target ;
 	}
@@ -107,7 +110,7 @@ public class CameraHelper
 	/**
 	 * Inquires if argument is cameras current target
 	 */
-	public boolean hasTarget(Sprite target)
+	public boolean hasTarget(AbstractGameObject target)
 	{
 		return hasTarget() && this.target.equals(target) ;
 	}
