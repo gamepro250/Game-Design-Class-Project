@@ -25,8 +25,8 @@ public class DesktopLauncher {
 		{
 			Settings settings = new Settings() ; // Create a set of settings for the texture packer
 			// Sets height and width of texture atlas
-			settings.maxWidth = 1024 ;
-			settings.maxHeight = 1024 ;
+			settings.maxWidth = 2048 ;
+			settings.maxHeight = 2048 ;
 			settings.duplicatePadding = false ;
 			settings.debug = drawDebugOutline ;
 			TexturePacker.process(settings, "assets-raw/images", "../core/assets/images", "mygame.pack") ; // Creates atlas in desired location
