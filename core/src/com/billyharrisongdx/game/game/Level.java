@@ -10,6 +10,9 @@ import com.billyharrisongdx.game.game.objects.Mountains ;
 import com.billyharrisongdx.game.game.objects.LavaOverlay ;
 import com.billyharrisongdx.game.game.objects.Trees ;
 import com.billyharrisongdx.game.game.objects.Volcano ;
+import com.billyharrisongdx.game.game.objects.Ice ;
+import com.billyharrisongdx.game.game.objects.Fire ;
+import com.billyharrisongdx.game.game.objects.Character ;
 
 public class Level
 {
@@ -61,12 +64,16 @@ public class Level
 	}
 		// Objects
 		public Array<Ground> grounds ;
+		public Character character ;
+		public Array<Ice> ice ;
+		public Array<Fire> fire ;
 
 		// Decoration
 		public Trees trees ;
 		public Mountains mountains ;
 		public LavaOverlay lavaOverlay ;
 		public Volcano volcano ;
+
 
 		/**
 		 * Initiates a level using the input filename
@@ -79,8 +86,13 @@ public class Level
 
 		private void init(String filename)
 		{
+			// Player character
+			character = null ;
+
 			// Objects
 			grounds = new Array<Ground>() ;
+			ice = new Array<Ice>() ;
+			fire = new Array<Fire>() ;
 
 			// Load image file that represents the level data
 			Pixmap pixmap = new Pixmap(Gdx.files.internal(filename)) ;
@@ -124,14 +136,26 @@ public class Level
 					// Player spawn point
 					else if(BLOCK_TYPE.PLAYER_SPAWNPOINT.sameColor(currentPixel))
 					{
+						obj = new Character() ;
+						offsetHeight = -3.0f ;
+						obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight) ;
+						character = (Character) obj ;
 					}
 					// Fire
 					else if(BLOCK_TYPE.FIRE.sameColor(currentPixel))
 					{
+						obj = new Fire() ;
+						offsetHeight = -1.5f ;
+						obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight) ;
+						fire.add((Fire) obj);
 					}
 					// Ice
 					else if(BLOCK_TYPE.ICE.sameColor(currentPixel))
 					{
+						obj = new Ice() ;
+						offsetHeight = -1.5f ;
+						obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight) ;
+						ice.add((Ice) obj) ;
 					}
 					// Unknown object/pixel color
 					else
@@ -176,7 +200,46 @@ public class Level
 				ground.render(batch) ;
 			}
 
+			// Draw Ice
+			for(Ice ice : ice)
+			{
+				ice.render(batch) ;
+			}
+			// Draw Fire
+			for(Fire fire : fire)
+			{
+				fire.render(batch) ;
+			}
+
+			//Draw player character
+			character.render(batch) ;
+
 			// Draw Lava Overlay
 			lavaOverlay.render(batch) ;
+		}
+
+		/**
+		 * Updates moving objects and stops rendering of collected items
+		 */
+		public void update(float deltaTime)
+		{
+			character.update(deltaTime) ;
+
+			for(Ground ground: grounds)
+			{
+				ground.update(deltaTime) ;
+			}
+
+			for(Ice ice : ice)
+			{
+				ice.update(deltaTime) ;
+			}
+
+			for(Fire fire : fire)
+			{
+				fire.update(deltaTime) ;
+			}
+
+			mountains.update(deltaTime) ;
 		}
 }

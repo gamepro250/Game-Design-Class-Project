@@ -11,25 +11,35 @@ package com.billyharrisongdx.game.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera ;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch ;
-//import com.badlogic.gdx.utils.Disposable ;
+import com.badlogic.gdx.utils.Disposable ;
 import com.billyharrisongdx.game.util.Constants ;
-//import com.badlogic.gdx.graphics.g2d.Sprite ;
+import com.badlogic.gdx.graphics.g2d.Sprite ;
 import com.badlogic.gdx.graphics.g2d.BitmapFont ;
+import com.badlogic.gdx.utils.Align ;
 
 public class WorldRenderer {
 
+	/**
+	 * Creates instances of both cameras, the world controller
+	 * and the sprite batch used to draw images
+	 */
 	private OrthographicCamera camera ;
 	private OrthographicCamera cameraGUI ; // Initialize camera to display the GUI
 	private SpriteBatch batch ;
 	private WorldController worldController ;
 
+	/**
+	 * sets this renderer's worldController and initiates the renderer
+	 */
 	public WorldRenderer(WorldController worldController)
 	{
 		this.worldController = worldController ;
 		init() ;
 	}
 
-
+	/**
+	 * Creates a sprite batch and orients the cameras
+	 */
 	private void init()
 	{
 		batch = new SpriteBatch() ;
@@ -43,12 +53,19 @@ public class WorldRenderer {
 		cameraGUI.update() ;
 	}
 
+	/**
+	 * Render everything related to the two cameras
+	 */
 	public void render()
 	{
 		renderWorld(batch) ; // Renders the game world
 		renderGui(batch) ; // Renders game's GUI
 	}
 
+	/**
+	 * Draws the level including background, character,
+	 * items, land, and water
+	 */
 	private void renderWorld(SpriteBatch batch)
 	{
 		worldController.cameraHelper.applyTo(camera) ;
@@ -57,6 +74,7 @@ public class WorldRenderer {
 		worldController.level.render(batch) ;
 		batch.end() ;
 	}
+
 	/**
 	 * Alters size of the view port
 	 */
@@ -73,7 +91,6 @@ public class WorldRenderer {
 
 	/**
 	 * Sets the location for, and draws, the score icon
-	 * @param batch
 	 */
 	private void renderGuiScore(SpriteBatch batch)
 	{
@@ -86,7 +103,6 @@ public class WorldRenderer {
 	/**
 	 * Sets the location for, and draws, the lives icons
 	 * displayed as gray if life is lost
-	 * @param batch
 	 */
 	private void renderGuiExtraLive(SpriteBatch batch)
 	{
@@ -105,7 +121,6 @@ public class WorldRenderer {
 
 	/**
 	 * sets the location for, and draws, the FPS Counter
-	 * @param batch
 	 */
 	private void renderGuiFpsCounter(SpriteBatch batch)
 	{
@@ -134,20 +149,69 @@ public class WorldRenderer {
 
 	/**
 	 * Calls all GUI render methods to draw entire GUI
-	 * @param batch
 	 */
 	private void renderGui(SpriteBatch batch)
 	{
 		batch.setProjectionMatrix(cameraGUI.combined) ;
 		batch.begin() ;
-		// Draw collected gold coins icon + text
+
+		// Draw collected ice icon + text
 		// (anchored to top left edge)
 		renderGuiScore(batch) ;
+		// Draw collected fire icon (anchored to top left edge)
+		renderGuiFirePowerup(batch) ;
 		// Draw extra lives icon + text (anchored to top right edge)
 		renderGuiExtraLive(batch) ;
 		// Draw FPS text (anchored to bottom right edge)
 		renderGuiFpsCounter(batch) ;
+		// Draw game over text
+		renderGuiGameOverMessage(batch) ;
+
 		batch.end() ;
+	}
+
+	/**
+	 * Display game over message in the center of the GUI
+	 */
+	private void renderGuiGameOverMessage(SpriteBatch batch)
+	{
+		float x = cameraGUI.viewportWidth / 2 ;
+		float y = cameraGUI.viewportHeight / 2 ;
+		if(worldController.isGameOver())
+		{
+			BitmapFont fontGameOver = Assets.instance.fonts.defaultBig ;
+			fontGameOver.setColor(1, 0.75f, 0.25f, 1) ;
+			fontGameOver.draw(batch, "GAME OVER", x, y, 0, Align.center, false) ;
+			fontGameOver.setColor(1, 1, 1, 1) ;
+		}
+	}
+
+	/**
+	 * Display the fire icon and remaining time when the
+	 * fire power-up  is acquired
+	 */
+	private void renderGuiFirePowerup(SpriteBatch batch)
+	{
+		float x = -15 ;
+		float y = 30 ;
+		float timeLeftFirePowerup = worldController.level.character.timeLeftFirePowerup ;
+
+		if(timeLeftFirePowerup > 0)
+		{
+			// Start icon fade in/out if the left power-up time
+			// is less than 4 seconds. The fade interval is set
+			// to 5 changes per second
+			if(timeLeftFirePowerup < 4)
+			{
+				if(((int)(timeLeftFirePowerup * 5) % 2) != 0)
+				{
+					batch.setColor(1, 1, 1, 0.5f) ;
+				}
+			}
+			batch.draw(Assets.instance.fire.fire, x, y, 50, 50, 100, 100, 0.35f, -0.35f, 0) ;
+			batch.setColor(1, 1, 1, 1) ;
+			Assets.instance.fonts.defaultSmall.draw(batch, "" + (int)timeLeftFirePowerup, x + 60, y + 57) ;
+		}
 	}
 
 	/**

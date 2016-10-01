@@ -11,6 +11,7 @@ package com.billyharrisongdx.game.game.objects;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch ;
 import com.badlogic.gdx.graphics.g2d.TextureRegion ;
 import com.billyharrisongdx.game.game.Assets ;
+
 public class Ground extends AbstractGameObject
 {
 	private TextureRegion regLeft ; // Location of the left edge of the ground in the texture atlas
@@ -42,6 +43,8 @@ public class Ground extends AbstractGameObject
 	public void setLength(int length)
 	{
 		this.length = length ;
+		// Update bounding box for collision detection
+		bounds.set(0, 0, dimension.x * length, dimension.y) ;
 	}
 
 	/**
