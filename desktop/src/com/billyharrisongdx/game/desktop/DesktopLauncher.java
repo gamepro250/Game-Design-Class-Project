@@ -25,7 +25,7 @@ public class DesktopLauncher {
 		{
 			Settings settings = new Settings() ; // Create a set of settings for the texture packer
 			// Sets height and width of texture atlas
-			settings.maxWidth = 2048 ;        
+			settings.maxWidth = 2048 ;
 			settings.maxHeight = 2048 ;
 			settings.duplicatePadding = false ;
 			settings.debug = drawDebugOutline ;

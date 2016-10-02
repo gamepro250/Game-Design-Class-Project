@@ -273,7 +273,7 @@ public class WorldController extends InputAdapter
 		r1.set(level.character.position.x, level.character.position.y,
 				level.character.bounds.width, level.character.bounds.height) ;
 
-		// Test for collision: Bunny Head <-> Ground
+		// Test for collision: Character <-> Ground
 		for(Ground ground : level.grounds)
 		{
 			r2.set(ground.position.x, ground.position.y, ground.bounds.width,
@@ -284,7 +284,7 @@ public class WorldController extends InputAdapter
 			// edge testing on ground
 		}
 
-		// Test collision: Bunny Head <-> Ice
+		// Test collision: Character <-> Ice
 		for(Ice ice : level.ice)
 		{
 			if(ice.collected) continue ;
@@ -295,7 +295,7 @@ public class WorldController extends InputAdapter
 			break ;
 		}
 
-		// Test collision: Bunny Head <-> Fire
+		// Test collision: Character <-> Fire
 		for(Fire fire : level.fire)
 		{
 			if(fire.collected) continue ;

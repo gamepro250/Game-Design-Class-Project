@@ -1,3 +1,11 @@
+/**
+ * Author: Billy Harrison
+ *
+ * Date: 10/1/16
+ *
+ * Class: Game Design
+ */
+
 package com.billyharrisongdx.game.game.objects;
 
 import com.badlogic.gdx.Gdx ;
@@ -12,11 +20,10 @@ public class Character extends AbstractGameObject
 
 	/**
 	 * Set the minimun and maximum jumping times with and
-	 * without the feather power-up
+	 * without the fire power-up
 	 */
-	private final float JUMP_TIME_MAX = 0.3f ;
+	private final float JUMP_TIME_MAX = 0.6f ;
 	private final float JUMP_TIME_MIN = 0.1f ;
-	private final float JUMP_TIME_OFFSET_FLYING = JUMP_TIME_MAX - 0.018f ;
 
 	/**
 	 * enum for the possible movement directions
@@ -102,7 +109,6 @@ public class Character extends AbstractGameObject
 			case JUMP_FALLING: // Falling down after jump
 				if(jumpKeyPressed && hasFirePowerup)
 				{
-					timeJumping = JUMP_TIME_OFFSET_FLYING ;
 					jumpState = JUMP_STATE.JUMP_RISING ;
 				}
 				break ;
@@ -110,7 +116,7 @@ public class Character extends AbstractGameObject
 	}
 
 	/**
-	 * Used to activate feather power-up
+	 * Used to activate fire power-up
 	 */
 	public void setFirePowerup(boolean pickedUp)
 	{
@@ -118,6 +124,7 @@ public class Character extends AbstractGameObject
 		if(pickedUp)
 		{
 			timeLeftFirePowerup = Constants.ITEM_FIRE_POWERUP_DURATION ;
+			terminalVelocity.x = 6 ;
 		}
 	}
 
@@ -149,6 +156,7 @@ public class Character extends AbstractGameObject
                 // disable power-up
                 timeLeftFirePowerup = 0;
                 setFirePowerup(false);
+                terminalVelocity.x = 3 ;
             }
         }
     }
@@ -202,7 +210,7 @@ public class Character extends AbstractGameObject
 	{
 		TextureRegion reg = null ;
 
-		// Set special color when game object has a feather power-up
+		// Set special color when game object has a fire power-up
 		if(hasFirePowerup)
 		{
 			batch.setColor(1.0f, 0.8f, 0.0f, 1.0f) ;

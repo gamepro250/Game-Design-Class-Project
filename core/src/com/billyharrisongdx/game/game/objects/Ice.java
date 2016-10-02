@@ -7,10 +7,10 @@ import com.billyharrisongdx.game.game.Assets ;
 public class Ice extends AbstractGameObject
 {
 	/**
-	 * Variables holding the ice texture region and
+	 * Variables holding the gold coin texture region and
 	 * its current collection status
 	 */
-	private TextureRegion regIce ;
+	private TextureRegion regGoldCoin ;
 
 	public boolean collected ;
 
@@ -20,14 +20,14 @@ public class Ice extends AbstractGameObject
 	}
 
 	/**
-	 * Sets dimension for the ice and its bounds and sets
+	 * Sets dimension for the coin and its bounds and sets
 	 * its texture region and that it is not collected
 	 */
 	private void init()
 	{
 		dimension.set(0.5f, 0.5f) ;
 
-		regIce = Assets.instance.ice.ice ;
+		regGoldCoin = Assets.instance.ice.ice ;
 
 		// Set bounding box for collision detection
 		bounds.set(0, 0, dimension.x, dimension.y) ;
@@ -36,21 +36,21 @@ public class Ice extends AbstractGameObject
 	}
 
 	/**
-	 * Draws the ice in the specified location
+	 * Draws the gold coin in the specified location
 	 */
 	public void render(SpriteBatch batch)
 	{
 		if(collected) return ;
 
 		TextureRegion reg = null ;
-		reg = regIce ;
+		reg = regGoldCoin ;
 		batch.draw(reg.getTexture(), position.x, position.y, origin.x, origin.y,
 				dimension.x, dimension.y, scale.x, scale.y, rotation, reg.getRegionX(),
 				reg.getRegionY(), reg.getRegionWidth(), reg.getRegionHeight(), false, false) ;
 	}
 
 	/**
-	 * Returns ice point value
+	 * Returns coin point value
 	 */
 	public int getScore()
 	{
