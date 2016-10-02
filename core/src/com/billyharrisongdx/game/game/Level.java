@@ -1,3 +1,11 @@
+/**
+ * Author: Billy Harrison
+ *
+ * Date: 10/1/16
+ *
+ * Class: Game Design
+ */
+
 package com.billyharrisongdx.game.game;
 
 import com.badlogic.gdx.Gdx ;

@@ -1,3 +1,11 @@
+/**
+ * Author: Billy Harrison
+ *
+ * Date: 10/1/16
+ *
+ * Class: Game Design
+ */
+
 package com.billyharrisongdx.game.game.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch ;
