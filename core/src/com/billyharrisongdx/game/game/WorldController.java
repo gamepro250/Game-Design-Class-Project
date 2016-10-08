@@ -26,8 +26,9 @@ import com.badlogic.gdx.math.Rectangle ;
 import com.billyharrisongdx.game.game.objects.GoldCoin ;
 import com.billyharrisongdx.game.game.objects.Feather ;
 import com.billyharrisongdx.game.game.objects.BunnyHead ;
-import com.billyharrisongdx.game.game.objects.BunnyHead.JUMP_STATE; ;
-
+import com.billyharrisongdx.game.game.objects.BunnyHead.JUMP_STATE ;
+import com.badlogic.gdx.Game ;
+import com.billyharrisongdx.game.screens.MenuScreen ;
 
 public class WorldController extends InputAdapter
 {
@@ -46,6 +47,7 @@ public class WorldController extends InputAdapter
 	// Rectangles for collision detection
 	private Rectangle r1 = new Rectangle() ;
 	private Rectangle r2 = new Rectangle() ;
+	private Game game ;
 
 	/**
 	 * Delay between losing last life and game restarting
@@ -53,8 +55,9 @@ public class WorldController extends InputAdapter
 	private float timeLeftGameOverDelay ;
 
 
-	public WorldController()
+	public WorldController(Game game)
 	{
+		this.game = game ;
 		init() ;
 	}
 
@@ -107,18 +110,18 @@ public class WorldController extends InputAdapter
 	public void update(float deltaTime)
 	{
 		handleDebugInput(deltaTime) ;
-		if(isGameOver())
+		if(isGameOver()) // Returns to start screen if all lives are lost
 		{
 			timeLeftGameOverDelay -= deltaTime ;
 			if(timeLeftGameOverDelay < 0)
 			{
-				init() ;
+				backToMenu() ;
 			}
 		}
-			else
-			{
-				handleInputGame(deltaTime) ;
-			}
+		else
+		{
+			handleInputGame(deltaTime) ;
+		}
 		level.update(deltaTime) ;
 		testCollisions() ;
 		cameraHelper.update(deltaTime) ;
@@ -189,6 +192,10 @@ public class WorldController extends InputAdapter
 		{
 			cameraHelper.setTarget(cameraHelper.hasTarget() ? null : level.bunnyHead) ;
 			Gdx.app.debug(TAG, "Camera follow enabled: " + cameraHelper.hasTarget()) ;
+		}
+		else if(keycode == Keys.ESCAPE || keycode == Keys.BACK)
+		{
+			backToMenu() ;
 		}
 		return false ;
 	}
@@ -314,13 +321,28 @@ public class WorldController extends InputAdapter
 		}
 	}
 
+	/**
+	 * Checks if the player has lost all of their extra lives
+	 */
 	public boolean isGameOver()
 	{
 		return lives < 0 ;
 	}
 
+	/**
+	 * Returns whether or not the bunny is below the water level (had died)
+	 */
 	public boolean isPlayerInWater()
 	{
 		return level.bunnyHead.position.y < -5 ;
+	}
+
+	/**
+	 * Returns program to the start menu
+	 */
+	private void backToMenu()
+	{
+		// Switch to menu screen
+		game.setScreen(new MenuScreen(game)) ;
 	}
 }

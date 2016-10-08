@@ -16,6 +16,7 @@ import com.billyharrisongdx.game.util.Constants ;
 import com.badlogic.gdx.graphics.g2d.Sprite ;
 import com.badlogic.gdx.graphics.g2d.BitmapFont ;
 import com.badlogic.gdx.utils.Align ;
+import com.billyharrisongdx.game.util.GamePreferences ;
 
 public class WorldRenderer {
 
@@ -164,8 +165,11 @@ public class WorldRenderer {
 		renderGuiFeatherPowerup(batch) ;
 		// Draw extra lives icon + text (anchored to top right edge)
 		renderGuiExtraLive(batch) ;
-		// Draw FPS text (anchored to bottom right edge)
-		renderGuiFpsCounter(batch) ;
+		// Draw FPS text if box is checked(anchored to bottom right edge)
+		if(GamePreferences.instance.showFpsCounter)
+		{
+			renderGuiFpsCounter(batch) ;
+		}
 		// Draw game over text
 		renderGuiGameOverMessage(batch) ;
 

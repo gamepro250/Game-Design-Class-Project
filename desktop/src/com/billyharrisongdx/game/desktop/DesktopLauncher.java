@@ -27,9 +27,10 @@ public class DesktopLauncher {
 			// Sets height and width of texture atlas
 			settings.maxWidth = 1024 ;
 			settings.maxHeight = 1024 ;
-			settings.duplicatePadding = false ;
+			//settings.duplicatePadding = false ;
 			settings.debug = drawDebugOutline ;
 			TexturePacker.process(settings, "assets-raw/images", "../core/assets/images", "canyonbunny.pack") ; // Creates atlas in desired location
+			TexturePacker.process(settings, "assets-raw/images-ui", "../core/assets/images", "canyonbunny-ui.pack") ; // Creates start screen atlas in desired location
 		}
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
