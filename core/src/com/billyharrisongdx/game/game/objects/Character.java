@@ -13,6 +13,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch ;
 import com.badlogic.gdx.graphics.g2d.TextureRegion ;
 import com.billyharrisongdx.game.game.Assets ;
 import com.billyharrisongdx.game.util.Constants ;
+import com.billyharrisongdx.game.util.GamePreferences ;
+import com.billyharrisongdx.game.util.CharacterSkin ;
 
 public class Character extends AbstractGameObject
 {
@@ -209,6 +211,9 @@ public class Character extends AbstractGameObject
 	public void render(SpriteBatch batch)
 	{
 		TextureRegion reg = null ;
+
+		// Apply Skin Color
+		batch.setColor(CharacterSkin.values()[GamePreferences.instance.charSkin].getColor()) ;
 
 		// Set special color when game object has a fire power-up
 		if(hasFirePowerup)

@@ -26,8 +26,9 @@ import com.badlogic.gdx.math.Rectangle ;
 import com.billyharrisongdx.game.game.objects.Ice ;
 import com.billyharrisongdx.game.game.objects.Fire ;
 import com.billyharrisongdx.game.game.objects.Character ;
-import com.billyharrisongdx.game.game.objects.Character.JUMP_STATE; ;
-
+import com.billyharrisongdx.game.game.objects.Character.JUMP_STATE;
+import com.billyharrisongdx.game.screens.MenuScreen ;
+import com.badlogic.gdx.Game ;
 
 public class WorldController extends InputAdapter
 {
@@ -43,14 +44,16 @@ public class WorldController extends InputAdapter
 	// Rectangles for collision detection
 	private Rectangle r1 = new Rectangle() ;
 	private Rectangle r2 = new Rectangle() ;
+	private Game game ;
 
 	/**
 	 * Delay between losing last life and game restarting
 	 */
 	private float timeLeftGameOverDelay ;
 
-	public WorldController()
+	public WorldController(Game game)
 	{
+		this.game = game ;
 		init() ;
 	}
 
@@ -103,12 +106,12 @@ public class WorldController extends InputAdapter
 	public void update(float deltaTime)
 	{
 		handleDebugInput(deltaTime) ;
-		if(isGameOver())
+		if(isGameOver()) // Returns to start menu when all lives lost
 		{
 			timeLeftGameOverDelay -= deltaTime ;
 			if(timeLeftGameOverDelay < 0)
 			{
-				init() ;
+				backToMenu() ;
 			}
 		}
 			else
@@ -182,6 +185,10 @@ public class WorldController extends InputAdapter
 		{
 			cameraHelper.setTarget(cameraHelper.hasTarget() ? null : level.character) ;
 			Gdx.app.debug(TAG, "Camera follow enabled: " + cameraHelper.hasTarget()) ;
+		}
+		else if(keycode == Keys.ESCAPE || keycode == Keys.BACK)
+		{
+			backToMenu() ;
 		}
 		return false ;
 	}
@@ -268,6 +275,9 @@ public class WorldController extends InputAdapter
 		Gdx.app.log(TAG, "Fire collected") ;
 	}
 
+	/**
+	 * Use collision detection methods to see if character hits anything
+	 */
 	private void testCollisions()
 	{
 		r1.set(level.character.position.x, level.character.position.y,
@@ -307,13 +317,28 @@ public class WorldController extends InputAdapter
 		}
 	}
 
+	/**
+	 * Have all lives been lost?
+	 */
 	public boolean isGameOver()
 	{
 		return lives < 0 ;
 	}
 
+	/**
+	 * Is player in lava (dead)
+	 */
 	public boolean isPlayerInLava()
 	{
 		return level.character.position.y < -5 ;
+	}
+
+	/**
+	 * returns to start menu
+	 */
+	private void backToMenu()
+	{
+		// Switch to menu screen
+		game.setScreen(new MenuScreen(game)) ;
 	}
 }
