@@ -11,6 +11,8 @@ package com.billyharrisongdx.game.game.objects;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch ;
 import com.badlogic.gdx.graphics.g2d.TextureRegion ;
 import com.billyharrisongdx.game.game.Assets ;
+import com.badlogic.gdx.math.MathUtils ;
+import com.badlogic.gdx.math.Vector2 ;
 
 /**
  * Class that contains information on how to draw the
@@ -22,6 +24,11 @@ public class Rock extends AbstractGameObject
 	private TextureRegion regMiddle ; // Location of the middle of the rock in the texture atlas
 
 	private int length ; // # of times to repeat the middle of the rock
+	private final float FLOAT_CYCLE_TIME = 2.0f ;
+	private final float FLOAT_AMPLITUDE = 0.25f ;
+	private float floatCycleTimeLeft ;
+	private boolean floatingDownwards ;
+	private Vector2 floatTargetPosition ;
 
 	public Rock()
 	{
@@ -37,6 +44,10 @@ public class Rock extends AbstractGameObject
 
 		//Start length of this rock
 		setLength(1) ;
+
+		floatingDownwards = false ;
+		floatCycleTimeLeft = MathUtils.random(0, FLOAT_CYCLE_TIME / 2) ;
+		floatTargetPosition = null ;
 	}
 
 	/**
@@ -98,4 +109,32 @@ public class Rock extends AbstractGameObject
 				reg.getRegionHeight(), true, false) ;
 
 	}
+
+	@Override
+	public void update(float deltaTime)
+	{
+		super.update(deltaTime) ;
+
+		floatCycleTimeLeft -= deltaTime ;
+		if(floatTargetPosition == null)
+		{
+			floatTargetPosition = new Vector2(position) ;
+		}
+
+		if(floatCycleTimeLeft <= 0)
+		{
+			floatCycleTimeLeft = FLOAT_CYCLE_TIME ;
+			floatingDownwards = !floatingDownwards ;
+			floatTargetPosition.y += FLOAT_AMPLITUDE * (floatingDownwards ? -1 : 1) ;
+		}
+		position.lerp(floatTargetPosition, deltaTime) ;
+	}
 }
+
+
+
+
+
+
+
+

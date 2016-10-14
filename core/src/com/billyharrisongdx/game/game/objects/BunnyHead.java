@@ -15,6 +15,8 @@ import com.billyharrisongdx.game.game.Assets ;
 import com.billyharrisongdx.game.util.Constants ;
 import com.billyharrisongdx.game.util.CharacterSkin ;
 import com.billyharrisongdx.game.util.GamePreferences ;
+import com.badlogic.gdx.Gdx ;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect ;
 
 public class BunnyHead extends AbstractGameObject
 {
@@ -55,6 +57,7 @@ public class BunnyHead extends AbstractGameObject
 	public JUMP_STATE jumpState ;
 	public boolean hasFeatherPowerup ;
 	public float timeLeftFeatherPowerup ;
+	public ParticleEffect dustParticles = new ParticleEffect() ;
 
 	public BunnyHead()
 	{
@@ -85,6 +88,9 @@ public class BunnyHead extends AbstractGameObject
 		// Power-ups
 		hasFeatherPowerup = false ;
 		timeLeftFeatherPowerup = 0 ;
+
+		// Particles
+		dustParticles.load(Gdx.files.internal("../core/assets/particles/dust.part"), Gdx.files.internal("particles")) ;
 	}
 
 	/**
@@ -161,6 +167,8 @@ public class BunnyHead extends AbstractGameObject
                 setFeatherPowerup(false);
             }
         }
+
+        dustParticles.update(deltaTime) ;
     }
 
 	/**
@@ -174,6 +182,11 @@ public class BunnyHead extends AbstractGameObject
 		{
 			case GROUNDED:
 				jumpState = JUMP_STATE.FALLING ;
+				if(velocity.x != 0)
+				{
+					dustParticles.setPosition(position.x + dimension.x / 2, position.y) ;
+					dustParticles.start() ;
+				}
 				break ;
 			case JUMP_RISING:
 				// Keep track of jump time
@@ -199,6 +212,7 @@ public class BunnyHead extends AbstractGameObject
 		}
 		if(jumpState != JUMP_STATE.GROUNDED)
 		{
+			dustParticles.allowCompletion() ;
 			super.updateMotionY(deltaTime) ;
 		}
 	}
@@ -211,6 +225,9 @@ public class BunnyHead extends AbstractGameObject
 	public void render(SpriteBatch batch)
 	{
 		TextureRegion reg = null ;
+
+		// Draw Particles
+		dustParticles.draw(batch) ;
 
 		// Apply Skin Color
 		batch.setColor(CharacterSkin.values()[GamePreferences.instance.charSkin].getColor()) ;
