@@ -15,6 +15,8 @@ import com.billyharrisongdx.game.game.Assets ;
 import com.billyharrisongdx.game.util.Constants ;
 import com.billyharrisongdx.game.util.GamePreferences ;
 import com.billyharrisongdx.game.util.CharacterSkin ;
+import com.badlogic.gdx.Gdx ;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect ;
 
 public class Character extends AbstractGameObject
 {
@@ -48,6 +50,7 @@ public class Character extends AbstractGameObject
 	 * direction, power-up remaining, etc.
 	 */
 	private TextureRegion regHead ;
+	private ParticleEffect lavaDust = new ParticleEffect() ;
 
 	public VIEW_DIRECTION viewDirection ;
 	public float timeJumping ;
@@ -84,6 +87,9 @@ public class Character extends AbstractGameObject
 		// Power-ups
 		hasFirePowerup = false ;
 		timeLeftFirePowerup = 0 ;
+
+		// Particle
+		lavaDust.load(Gdx.files.internal("../core/assets/particles/lavaDust.part"), Gdx.files.internal("particles")) ;
 	}
 
 	/**
@@ -161,6 +167,8 @@ public class Character extends AbstractGameObject
                 terminalVelocity.x = 3 ;
             }
         }
+
+        lavaDust.update(deltaTime);
     }
 
 	/**
@@ -174,6 +182,11 @@ public class Character extends AbstractGameObject
 		{
 			case GROUNDED:
 				jumpState = JUMP_STATE.FALLING ;
+				if(velocity.x != 0)
+				{
+					lavaDust.setPosition(position.x + dimension.x / 2, position.y) ;
+					lavaDust.start() ;
+				}
 				break ;
 			case JUMP_RISING:
 				// Keep track of jump time
@@ -199,6 +212,7 @@ public class Character extends AbstractGameObject
 		}
 		if(jumpState != JUMP_STATE.GROUNDED)
 		{
+			lavaDust.allowCompletion() ;
 			super.updateMotionY(deltaTime) ;
 		}
 	}
@@ -211,6 +225,9 @@ public class Character extends AbstractGameObject
 	public void render(SpriteBatch batch)
 	{
 		TextureRegion reg = null ;
+
+		// Draw Particles
+		lavaDust.draw(batch) ;
 
 		// Apply Skin Color
 		batch.setColor(CharacterSkin.values()[GamePreferences.instance.charSkin].getColor()) ;
