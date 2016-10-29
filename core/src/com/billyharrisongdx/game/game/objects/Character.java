@@ -17,6 +17,8 @@ import com.billyharrisongdx.game.util.GamePreferences ;
 import com.billyharrisongdx.game.util.CharacterSkin ;
 import com.badlogic.gdx.Gdx ;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect ;
+import com.badlogic.gdx.math.MathUtils ;
+import com.billyharrisongdx.game.util.AudioManager ;
 
 public class Character extends AbstractGameObject
 {
@@ -102,6 +104,7 @@ public class Character extends AbstractGameObject
 			case GROUNDED: // Character is standing on a platform
 				if(jumpKeyPressed)
 				{
+					AudioManager.instance.play(Assets.instance.sounds.jump) ;
 					// Start counting jump time from the beginning
 					timeJumping = 0 ;
 					jumpState = JUMP_STATE.JUMP_RISING ;
@@ -117,6 +120,7 @@ public class Character extends AbstractGameObject
 			case JUMP_FALLING: // Falling down after jump
 				if(jumpKeyPressed && hasFirePowerup)
 				{
+					AudioManager.instance.play(Assets.instance.sounds.jumpPowerup, 1, MathUtils.random(1.0f, 1.1f)) ;
 					jumpState = JUMP_STATE.JUMP_RISING ;
 				}
 				break ;

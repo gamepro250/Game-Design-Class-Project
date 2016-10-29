@@ -29,6 +29,7 @@ import com.billyharrisongdx.game.game.objects.Character ;
 import com.billyharrisongdx.game.game.objects.Character.JUMP_STATE;
 import com.billyharrisongdx.game.screens.MenuScreen ;
 import com.badlogic.gdx.Game ;
+import com.billyharrisongdx.game.util.AudioManager ;
 
 public class WorldController extends InputAdapter
 {
@@ -127,6 +128,7 @@ public class WorldController extends InputAdapter
 		cameraHelper.update(deltaTime) ;
 		if(!isGameOver() && isPlayerInLava())
 		{
+			AudioManager.instance.play(Assets.instance.sounds.lifeLost) ;
 			lives-- ;
 			if(isGameOver())
 			{
@@ -276,12 +278,14 @@ public class WorldController extends InputAdapter
 	private void onCollisionBunnyWithIce(Ice ice)
 	{
 		ice.collected = true ;
+		AudioManager.instance.play(Assets.instance.sounds.pickupIce) ;
 		score += ice.getScore() ;
 		Gdx.app.log(TAG, "Ice collected") ;
 	}
 	private void onCollisionBunnyWithFire(Fire fire)
 	{
 		fire.collected = true ;
+		AudioManager.instance.play(Assets.instance.sounds.pickupFire) ;
 		score += fire.getScore() ;
 		level.character.setFirePowerup(true) ;
 		Gdx.app.log(TAG, "Fire collected") ;

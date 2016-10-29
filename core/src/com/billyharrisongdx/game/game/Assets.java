@@ -19,6 +19,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion ;
 import com.badlogic.gdx.graphics.Texture ;
 import com.badlogic.gdx.graphics.Texture.TextureFilter ;
 import com.badlogic.gdx.graphics.g2d.BitmapFont ;
+import com.badlogic.gdx.audio.Music ;
+import com.badlogic.gdx.audio.Sound ;
 
 public class Assets implements Disposable, AssetErrorListener
 {
@@ -36,6 +38,8 @@ public class Assets implements Disposable, AssetErrorListener
 	public AssetBoat boat ;
 	public AssetFonts fonts ;
 	public AssetVolcano volcano ;
+	public AssetSounds sounds ;
+	public AssetMusic music ;
 
 
 	// singleton: prevent instantiation from other classes
@@ -75,6 +79,18 @@ public class Assets implements Disposable, AssetErrorListener
 		// load texture atlas
 		assetManager.load(Constants.TEXTURE_ATLAS_OBJECTS,TextureAtlas.class) ;
 
+		// load sounds
+		assetManager.load("sounds/jump.wav", Sound.class) ;
+		assetManager.load("sounds/jump_powerup.wav", Sound.class) ;
+		assetManager.load("sounds/ice.wav", Sound.class) ;
+		assetManager.load("sounds/fire.wav", Sound.class) ;
+		assetManager.load("sounds/life_lost.wav", Sound.class) ;
+
+		// load music
+
+		assetManager.load("music/williams_when_it_falls.mp3", Music.class) ;
+
+
 		// start loading assets and wait until finished
 		assetManager.finishLoading();
 
@@ -102,6 +118,8 @@ public class Assets implements Disposable, AssetErrorListener
 		boat = new AssetBoat(atlas) ;
 		volcano = new AssetVolcano(atlas) ;
 		fonts = new AssetFonts() ;
+		sounds = new AssetSounds(assetManager) ;
+		music = new AssetMusic(assetManager) ;
 }
 
 	/**
@@ -209,6 +227,34 @@ public class Assets implements Disposable, AssetErrorListener
 			mountain = atlas.findRegion("Mountain") ;
 			tree = atlas.findRegion("Tree") ;
 			volcano = atlas.findRegion("Volcano") ;
+		}
+	}
+
+	public class AssetSounds
+	{
+		public final Sound jump ;
+		public final Sound jumpPowerup ;
+		public final Sound pickupIce ;
+		public final Sound pickupFire ;
+		public final Sound lifeLost ;
+
+		public AssetSounds(AssetManager am)
+		{
+			jump = am.get("sounds/jump.wav", Sound.class) ;
+			jumpPowerup = am.get("sounds/jump_powerup.wav", Sound.class) ;
+			pickupIce = am.get("sounds/ice.wav", Sound.class) ;
+			pickupFire = am.get("sounds/fire.wav", Sound.class) ;
+			lifeLost = am.get("sounds/life_lost.wav", Sound.class) ;
+		}
+	}
+
+	public class AssetMusic
+	{
+		public final Music song01 ;
+
+		public AssetMusic(AssetManager am)
+		{
+			song01 = am.get("music/williams_when_it_falls.mp3", Music.class) ;
 		}
 	}
 }

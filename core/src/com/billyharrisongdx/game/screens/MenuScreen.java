@@ -33,6 +33,7 @@ import com.billyharrisongdx.game.game.Assets ;
 import com.billyharrisongdx.game.util.Constants ;
 import com.billyharrisongdx.game.util.CharacterSkin ;
 import com.billyharrisongdx.game.util.GamePreferences ;
+import com.billyharrisongdx.game.util.AudioManager ;
 
 public class MenuScreen extends AbstractGameScreen
 {
@@ -247,7 +248,7 @@ public class MenuScreen extends AbstractGameScreen
 		}
 		stage.act(deltaTime) ;
 		stage.draw() ;
-		stage.setDebugAll(true) ;
+		//stage.setDebugAll(true) ;
 	}
 
 	/**
@@ -298,6 +299,7 @@ public class MenuScreen extends AbstractGameScreen
 	{
 		saveSettings() ;
 		onCancelClicked() ;
+		AudioManager.instance.onSettingsUpdated() ;
 	}
 
 	/**
@@ -308,6 +310,7 @@ public class MenuScreen extends AbstractGameScreen
 		btnMenuPlay.setVisible(true) ;
 		btnMenuOptions.setVisible(true) ;
 		winOptions.setVisible(false) ;
+		AudioManager.instance.onSettingsUpdated() ;
 	}
 
 	/**
