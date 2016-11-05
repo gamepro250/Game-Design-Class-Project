@@ -20,10 +20,14 @@ import com.billyharrisongdx.game.game.objects.Clouds ;
 import com.billyharrisongdx.game.game.objects.GoldCoin ;
 import com.billyharrisongdx.game.game.objects.Feather ;
 import com.billyharrisongdx.game.game.objects.BunnyHead ;
+import com.billyharrisongdx.game.game.objects.Carrot ;
+import com.billyharrisongdx.game.game.objects.Goal ;
 
 public class Level
 {
 	public static final String TAG = Level.class.getName() ;
+	public Array<Carrot> carrots ;
+	public Goal goal ;
 
 	/**
 	 * Color data used to compare from the
@@ -36,7 +40,8 @@ public class Level
 		ROCK(0, 255, 0), // Green
 		PLAYER_SPAWNPOINT(255, 255, 255), // White
 		ITEM_FEATHER(255, 0, 255), // Purple
-		ITEM_GOLD_COIN(255, 255, 0) ; // Yellow
+		ITEM_GOLD_COIN(255, 255, 0),  // Yellow
+		GOAL(255, 0, 0) ; // Red
 
 		private int color ;
 
@@ -102,6 +107,7 @@ public class Level
 			rocks = new Array<Rock>() ;
 			goldcoins = new Array<GoldCoin>() ;
 			feathers = new Array<Feather>() ;
+			carrots = new Array<Carrot>() ;
 
 			// Load image file that represents the level data
 			Pixmap pixmap = new Pixmap(Gdx.files.internal(filename)) ;
@@ -166,6 +172,14 @@ public class Level
 						obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight) ;
 						goldcoins.add((GoldCoin) obj) ;
 					}
+					// Goal
+					else if(BLOCK_TYPE.GOAL.sameColor(currentPixel))
+					{
+						obj = new Goal() ;
+						offsetHeight = -7.0f ;
+						obj.position.set(pixelX, baseHeight + offsetHeight) ;
+						goal = (Goal)obj ;
+					}
 					// Unknown object/pixel color
 					else
 					{
@@ -201,6 +215,9 @@ public class Level
 			// Draw Mountains
 			mountains.render(batch) ;
 
+			// Draw Goal
+			goal.render(batch) ;
+
 			// Draw Rocks
 			for (Rock rock : rocks)
 			{
@@ -215,6 +232,11 @@ public class Level
 			for(Feather feather : feathers)
 			{
 				feather.render(batch) ;
+			}
+			// Draw Carrots
+			for(Carrot carrot: carrots)
+			{
+				carrot.render(batch) ;
 			}
 			// Draw player character
 			bunnyHead.render(batch) ;
@@ -248,6 +270,10 @@ public class Level
 				feather.update(deltaTime) ;
 			}
 
+			for(Carrot carrot : carrots)
+			{
+				carrot.update(deltaTime) ;
+			}
 			clouds.update(deltaTime) ;
 		}
 }

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch ;
 import com.badlogic.gdx.math.Vector2 ;
 import com.badlogic.gdx.math.Rectangle ;
 import com.badlogic.gdx.math.MathUtils ;
+import com.badlogic.gdx.physics.box2d.Body ;
 
 /**
  * Contains methods that must be inherited by all classes that
@@ -29,6 +30,7 @@ public abstract class AbstractGameObject
 	public Vector2 origin ;
 	public Vector2 scale ;
 	public float rotation ;
+	public Body body ;
 
 	/**
 	 * This set of variables holds the movement information and the
@@ -63,11 +65,19 @@ public abstract class AbstractGameObject
 	 */
 	public void update(float deltaTime)
 	{
-		updateMotionX(deltaTime) ;
-		updateMotionY(deltaTime) ;
-		// Move to new position
-		position.x += velocity.x * deltaTime ;
-		position.y += velocity.y * deltaTime ;
+		if(body == null)
+		{
+			updateMotionX(deltaTime) ;
+			updateMotionY(deltaTime) ;
+			// Move to new position
+			position.x += velocity.x * deltaTime ;
+			position.y += velocity.y * deltaTime ;
+		}
+		else
+		{
+			position.set(body.getPosition()) ;
+			rotation = body.getAngle() * MathUtils.radiansToDegrees ;
+		}
 	}
 
 	/**

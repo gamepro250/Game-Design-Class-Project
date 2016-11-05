@@ -66,6 +66,7 @@ public class GameScreen extends AbstractGameScreen
 	public void hide()
 	{
 		worldRenderer.dispose() ;
+		worldController.dispose() ;
 		Gdx.input.setCatchBackKey(false) ;
 	}
 
