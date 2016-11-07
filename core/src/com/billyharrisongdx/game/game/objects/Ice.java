@@ -52,7 +52,7 @@ public class Ice extends AbstractGameObject
 	/**
 	 * Returns coin point value
 	 */
-	public int getScore()
+	public static int getScore()
 	{
 		return 100 ;
 	}

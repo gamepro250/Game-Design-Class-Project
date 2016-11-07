@@ -18,6 +18,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.billyharrisongdx.game.util.CameraHelper;
+import com.billyharrisongdx.game.util.CollisionHandler;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.billyharrisongdx.game.util.Constants ;
@@ -25,6 +26,7 @@ import com.billyharrisongdx.game.game.objects.Ground ;
 import com.badlogic.gdx.math.Rectangle ;
 import com.billyharrisongdx.game.game.objects.Ice ;
 import com.billyharrisongdx.game.game.objects.Fire ;
+import com.billyharrisongdx.game.game.objects.AbstractGameObject;
 import com.billyharrisongdx.game.game.objects.Character ;
 import com.billyharrisongdx.game.game.objects.Character.JUMP_STATE;
 import com.billyharrisongdx.game.screens.MenuScreen ;
@@ -53,12 +55,17 @@ public class WorldController extends InputAdapter implements Disposable
 	public float livesVisual ;
 	public float scoreVisual ;
 
+	public float timeHeld ;
+	public boolean playJump = true ;
+
 	public World world ;
 
 	// Rectangles for collision detection
 	private Rectangle r1 = new Rectangle() ;
 	private Rectangle r2 = new Rectangle() ;
 	private Game game ;
+
+	public Array<AbstractGameObject> objectsToRemove ;
 
 	/**
 	 * Delay between losing last life and game restarting
@@ -87,6 +94,7 @@ public class WorldController extends InputAdapter implements Disposable
 	{
 		if(world != null) world.dispose() ;
 		world = new World(new Vector2(0, -9.81f), true) ;
+		world.setContactListener(new CollisionHandler(this));
 		Vector2 origin = new Vector2() ;
 		for(Ground ground : level.grounds)
 		{
@@ -94,6 +102,7 @@ public class WorldController extends InputAdapter implements Disposable
 			bodyDef.type = BodyType.KinematicBody ;
 			bodyDef.position.set(ground.position) ;
 				Body body = world.createBody(bodyDef) ;
+			body.setUserData(ground);
 			ground.body = body ;
 			PolygonShape polygonShape = new PolygonShape() ;
 			origin.x = ground.bounds.width / 2.0f ;
@@ -105,7 +114,6 @@ public class WorldController extends InputAdapter implements Disposable
 			polygonShape.dispose() ;
 		}
 
-
 		// Create box2d body for character
 		Character c = level.character ;
 
@@ -114,6 +122,7 @@ public class WorldController extends InputAdapter implements Disposable
 		bodyDef.position.set(c.position) ;
 		bodyDef.fixedRotation = true ;
 			Body body = world.createBody(bodyDef) ;
+		body.setUserData(c) ;
 		c.body = body ;
 		PolygonShape polygonShape = new PolygonShape() ;
 
@@ -130,6 +139,41 @@ public class WorldController extends InputAdapter implements Disposable
 		body.createFixture(fixtureDef) ;
 		polygonShape.dispose() ;
 
+		for(Ice ice : level.ice)
+		{
+			BodyDef bodyDef2 = new BodyDef() ;
+			bodyDef2.type = BodyType.KinematicBody ;
+			bodyDef2.position.set(ice.position) ;
+				Body body2 = world.createBody(bodyDef2) ;
+			body2.setUserData(ice);
+			ice.body = body2 ;
+			PolygonShape polygonShape2 = new PolygonShape() ;
+			origin.x = ice.bounds.width / 2.0f ;
+			origin.y = ice.bounds.height / 2.0f ;
+			polygonShape.setAsBox(ice.bounds.width / 2.0f, ice.bounds.height / 2.0f, origin, 0) ;
+			FixtureDef fixtureDef2 = new FixtureDef() ;
+			fixtureDef2.shape = polygonShape2 ;
+			body2.createFixture(fixtureDef2) ;
+			polygonShape2.dispose() ;
+		}
+
+		for(Fire fire: level.fire)
+		{
+			BodyDef bodyDef3 = new BodyDef() ;
+			bodyDef3.type = BodyType.KinematicBody ;
+			bodyDef3.position.set(fire.position) ;
+				Body body3 = world.createBody(bodyDef3) ;
+			body3.setUserData(fire);
+			fire.body = body3 ;
+			PolygonShape polygonShape3 = new PolygonShape() ;
+			origin.x = fire.bounds.width / 2.0f ;
+			origin.y = fire.bounds.height / 2.0f ;
+			polygonShape3.setAsBox(fire.bounds.width / 2.0f, fire.bounds.height / 2.0f, origin, 0) ;
+			FixtureDef fixtureDef3 = new FixtureDef() ;
+			fixtureDef3.shape = polygonShape3 ;
+			body3.createFixture(fixtureDef3) ;
+			polygonShape3.dispose() ;
+		}
 	}
 
 	/**
@@ -137,6 +181,7 @@ public class WorldController extends InputAdapter implements Disposable
 	 */
 	private void init()
 	{
+		objectsToRemove = new Array<AbstractGameObject>();
 		Gdx.input.setInputProcessor(this) ;
 		cameraHelper = new CameraHelper() ;
 		lives = Constants.LIVES_START ; // Starts level with 3 lives
@@ -144,32 +189,38 @@ public class WorldController extends InputAdapter implements Disposable
 		timeLeftGameOverDelay = 0 ;
 		initLevel() ;
 	}
-
-
-//	/**
-//	 * Creates assest used to test rendering
-//	 */
-//	private Pixmap createProceduralPixmap (int width, int height)
-//	{
-//		Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888) ;
-//		// Fill square with red color at 50% opacity
-//		pixmap.setColor(1, 0, 0, 0.5f) ;
-//		pixmap.fill() ;
-//		// Draw a yellow-colored X shape on the square
-//		pixmap.setColor(1, 1, 0, 1) ;
-//		pixmap.drawLine(0, 0, width, height) ;
-//		pixmap.drawLine(width, 0, 0, height) ;
-//		// Draw a cyan-colored border around square
-//		pixmap.setColor(0, 1, 1, 1) ;
-//		pixmap.drawRectangle(0,  0, width, height) ;
-//		return pixmap ;
-//	}
-
 	/**
 	 * Updates the games state based on the deltaTime
 	 */
 	public void update(float deltaTime)
 	{
+
+		if (objectsToRemove.size > 0)
+		{
+			for (AbstractGameObject obj : objectsToRemove)
+			{
+				if (obj instanceof Ice)
+				{
+					int index = level.ice.indexOf((Ice) obj, true);
+					if (index != -1)
+					{
+					    level.ice.removeIndex(index);
+					    world.destroyBody(obj.body);
+					}
+				}
+				else if (obj instanceof Fire)
+				{
+					int index = level.fire.indexOf((Fire) obj, true);
+					if (index != -1)
+					{
+					    level.fire.removeIndex(index);
+					    world.destroyBody(obj.body);
+					}
+				}
+			}
+			objectsToRemove.removeRange(0, objectsToRemove.size - 1);
+		}
+
 		handleDebugInput(deltaTime) ;
 		if(isGameOver()) // Returns to start menu when all lives lost
 		{
@@ -184,7 +235,6 @@ public class WorldController extends InputAdapter implements Disposable
 				handleInputGame(deltaTime) ;
 			}
 		level.update(deltaTime) ;
-		testCollisions() ;
 		cameraHelper.update(deltaTime) ;
 		if(!isGameOver() && isPlayerInLava())
 		{
@@ -276,125 +326,57 @@ public class WorldController extends InputAdapter implements Disposable
 			// Player movement
 			if(Gdx.input.isKeyPressed(Keys.LEFT))
 			{
-				level.character.velocity.x = -level.character.terminalVelocity.x ;
-				level.character.body.setLinearVelocity(-level.character.terminalVelocity.x, level.character.velocity.y);
+				level.character.viewDirection = Character.VIEW_DIRECTION.LEFT ;
+				Vector2 vel = level.character.body.getLinearVelocity() ;
+				//level.character.body.setLinearVelocity(-level.character.terminalVelocity.x, vel.y);
+				level.character.body.applyForceToCenter(-level.character.terminalVelocity.x, vel.y, true);
 			}
 			else if(Gdx.input.isKeyPressed(Keys.RIGHT))
 			{
-				level.character.velocity.x = level.character.terminalVelocity.x ;
-				level.character.body.setLinearVelocity(level.character.terminalVelocity.x, level.character.velocity.y);
-			}
-			else
-			{
-				// Execute auto-forward movement on non-desktop platform
-				if(Gdx.app.getType() != ApplicationType.Desktop)
-				{
-					level.character.velocity.x =
-					level.character.terminalVelocity.x ;
-				}
+
+				level.character.viewDirection = Character.VIEW_DIRECTION.RIGHT ;
+				Vector2 vel = level.character.body.getLinearVelocity() ;
+				//level.character.body.setLinearVelocity(level.character.terminalVelocity.x, vel.y);
+				level.character.body.applyForceToCenter(level.character.terminalVelocity.x, vel.y, true);
 			}
 			// Character Jump
 			if(Gdx.input.isTouched() || Gdx.input.isKeyPressed(Keys.SPACE))
 			{
-				level.character.setJumping(true) ;
-			}
-			else
-			{
-				level.character.setJumping(false) ;
+				if(timeHeld < 1)
+				{
+					level.character.grounded = false ;
+					if(playJump == true)
+					{
+						AudioManager.instance.play(Assets.instance.sounds.jump) ;
+						playJump = false ;
+					}
+					Vector2 vel = level.character.body.getLinearVelocity() ;
+
+					if(level.character.hasFirePowerup())
+					{
+						level.character.body.setLinearVelocity(vel.x, level.character.terminalVelocity.y * 2) ;
+					}
+					else
+					{
+						level.character.body.setLinearVelocity(vel.x, level.character.terminalVelocity.y) ;
+					}
+					level.character.position.set(level.character.body.getPosition()) ;
+
+					timeHeld += deltaTime ;
+				}
 			}
 		}
 	}
-/*
-	private void onCollisionBunnyHeadWithGround(Ground ground)
-	{
-		Character character = level.character ;
-		float heightDifference = Math.abs(character.position.y - (ground.position.y + ground.bounds.height)) ;
-		if(heightDifference > 0.25f)
-		{
-			boolean hitRightEdge = character.position.x > (ground.position.x + ground.bounds.width / 2.0f) ;
-			if(hitRightEdge)
-			{
-				character.position.x = ground.position.x + ground.bounds.width ;
-			}
-			else
-			{
-				character.position.x = ground.position.x - character.bounds.width ;
-			}
 
-			return ;
-		}
-
-		switch(character.jumpState)
-		{
-			case GROUNDED:
-				break ;
-			case FALLING:
-			case JUMP_FALLING:
-				character.position.y = ground.position.y + character.bounds.height + character.origin.y ;
-				character.jumpState = JUMP_STATE.GROUNDED ;
-				break ;
-			case JUMP_RISING:
-				character.position.y = ground.position.y + character.bounds.height + character.origin.y ;
-				break ;
-		}
-	}
-*/
-	private void onCollisionBunnyWithIce(Ice ice)
+	public void flagForRemoval(AbstractGameObject obj)
 	{
-		ice.collected = true ;
-		AudioManager.instance.play(Assets.instance.sounds.pickupIce) ;
-		score += ice.getScore() ;
-		Gdx.app.log(TAG, "Ice collected") ;
-	}
-	private void onCollisionBunnyWithFire(Fire fire)
-	{
-		fire.collected = true ;
-		AudioManager.instance.play(Assets.instance.sounds.pickupFire) ;
-		score += fire.getScore() ;
-		level.character.setFirePowerup(true) ;
-		Gdx.app.log(TAG, "Fire collected") ;
+		objectsToRemove.add(obj) ;
 	}
 
-	/**
-	 * Use collision detection methods to see if character hits anything
-	 */
-	private void testCollisions()
+	public void resetJump()
 	{
-		r1.set(level.character.position.x, level.character.position.y,
-				level.character.bounds.width, level.character.bounds.height) ;
-
-		// Test for collision: Character <-> Ground
-		for(Ground ground : level.grounds)
-		{
-			r2.set(ground.position.x, ground.position.y, ground.bounds.width,
-					ground.bounds.height) ;
-			if(!r1.overlaps(r2)) continue ;
-			//onCollisionBunnyHeadWithGround(ground) ;
-			// IMPORTANT: must do all collisions for valid
-			// edge testing on ground
-		}
-
-		// Test collision: Character <-> Ice
-		for(Ice ice : level.ice)
-		{
-			if(ice.collected) continue ;
-			r2.set(ice.position.x, ice.position.y,
-					ice.bounds.width, ice.bounds.height) ;
-			if(!r1.overlaps(r2)) continue ;
-			onCollisionBunnyWithIce(ice) ;
-			break ;
-		}
-
-		// Test collision: Character <-> Fire
-		for(Fire fire : level.fire)
-		{
-			if(fire.collected) continue ;
-			r2.set(fire.position.x, fire.position.y,
-					fire.bounds.width, fire.bounds.height) ;
-			if(!r1.overlaps(r2)) continue ;
-			onCollisionBunnyWithFire(fire) ;
-			break ;
-		}
+		playJump = true ;
+		timeHeld = 0 ;
 	}
 
 	/**

@@ -58,7 +58,7 @@ public class Fire extends AbstractGameObject
 	/**
 	 * Returns Feather point value
 	 */
-	public int getScore()
+	public static int getScore()
 	{
 		return 250 ;
 	}
