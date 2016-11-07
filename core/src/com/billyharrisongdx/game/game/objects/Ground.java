@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch ;
 import com.badlogic.gdx.graphics.g2d.TextureRegion ;
 import com.billyharrisongdx.game.game.Assets ;
 import com.badlogic.gdx.math.MathUtils ;
-import com.badlogic.gdx.math.Vector2 ;
 
 public class Ground extends AbstractGameObject
 {
@@ -24,7 +23,6 @@ public class Ground extends AbstractGameObject
 	private final float FLOAT_AMPLITUDE = 0.25f ;
 	private float floatCycleTimeLeft ;
 	private boolean floatingDownwards ;
-	private Vector2 floatTargetPosition ;
 
 
 	public Ground()
@@ -45,7 +43,6 @@ public class Ground extends AbstractGameObject
 
 		floatingDownwards = false ;
 		floatCycleTimeLeft = MathUtils.random(0, FLOAT_CYCLE_TIME / 2) ;
-		floatTargetPosition = null ;
 	}
 
 	/**
@@ -92,7 +89,7 @@ public class Ground extends AbstractGameObject
 		reg = regCenter ;
 		for(int i = 0; i < length; i++)
 		{
-		
+
 			batch.draw(reg.getTexture(), position.x + relX, position.y + relY,
 					origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y,
 					rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),

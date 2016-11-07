@@ -11,9 +11,8 @@ package com.billyharrisongdx.game.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera ;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch ;
-import com.badlogic.gdx.utils.Disposable ;
+import com.billyharrisongdx.game.game.objects.Character;
 import com.billyharrisongdx.game.util.Constants ;
-import com.badlogic.gdx.graphics.g2d.Sprite ;
 import com.badlogic.gdx.graphics.g2d.BitmapFont ;
 import com.badlogic.gdx.utils.Align ;
 import com.billyharrisongdx.game.util.GamePreferences ;
@@ -31,7 +30,7 @@ public class WorldRenderer {
 	private SpriteBatch batch ;
 	private WorldController worldController ;
 
-	private static final boolean DEBUG_DRAW_BOX2D_WORLD = true ;
+	private static final boolean DEBUG_DRAW_BOX2D_WORLD = false ;
 	private Box2DDebugRenderer b2debugRenderer ;
 
 	/**
@@ -231,7 +230,7 @@ public class WorldRenderer {
 	{
 		float x = -15 ;
 		float y = 30 ;
-		float timeLeftFirePowerup = worldController.level.character.timeLeftFirePowerup ;
+		float timeLeftFirePowerup = Character.timeLeftFirePowerup ;
 
 		if(timeLeftFirePowerup > 0)
 		{

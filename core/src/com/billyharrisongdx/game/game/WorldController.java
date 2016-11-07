@@ -8,31 +8,22 @@
 
 package com.billyharrisongdx.game.game;
 
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.billyharrisongdx.game.util.CameraHelper;
 import com.billyharrisongdx.game.util.CollisionHandler;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.billyharrisongdx.game.util.Constants ;
 import com.billyharrisongdx.game.game.objects.Ground ;
-import com.badlogic.gdx.math.Rectangle ;
 import com.billyharrisongdx.game.game.objects.Ice ;
 import com.billyharrisongdx.game.game.objects.Fire ;
 import com.billyharrisongdx.game.game.objects.AbstractGameObject;
 import com.billyharrisongdx.game.game.objects.Character ;
-import com.billyharrisongdx.game.game.objects.Character.JUMP_STATE;
 import com.billyharrisongdx.game.screens.MenuScreen ;
 import com.badlogic.gdx.Game ;
 import com.billyharrisongdx.game.util.AudioManager ;
-import com.badlogic.gdx.math.MathUtils ;
 import com.badlogic.gdx.math.Vector2 ;
 import com.badlogic.gdx.physics.box2d.Body ;
 import com.badlogic.gdx.physics.box2d.BodyDef ;
@@ -54,23 +45,13 @@ public class WorldController extends InputAdapter implements Disposable
 	public int score ;
 	public float livesVisual ;
 	public float scoreVisual ;
-
 	public float timeHeld ;
 	public boolean playJump = true ;
-
 	public World world ;
-
-	// Rectangles for collision detection
-	private Rectangle r1 = new Rectangle() ;
-	private Rectangle r2 = new Rectangle() ;
-	private Game game ;
-
 	public Array<AbstractGameObject> objectsToRemove ;
 
-	/**
-	 * Delay between losing last life and game restarting
-	 */
-	private float timeLeftGameOverDelay ;
+	private Game game ;
+	private float timeLeftGameOverDelay ;	// Delay between losing last life and game restarting
 
 	public WorldController(Game game)
 	{
@@ -87,15 +68,24 @@ public class WorldController extends InputAdapter implements Disposable
 		scoreVisual = score ;
 		level = new Level(Constants.LEVEL_01) ; // Initiates level using LEVEL_01 map
 		cameraHelper.setTarget(level.character) ;
-		initPhysics() ;
+		initPhysics() ; // Initializes the Box2D physics world
 	}
 
+	/**
+	 * Sets up bodies for all Box2D objects
+	 */
 	private void initPhysics()
 	{
-		if(world != null) world.dispose() ;
+		if(world != null)
+		{
+			world.dispose() ;
+		}
 		world = new World(new Vector2(0, -9.81f), true) ;
 		world.setContactListener(new CollisionHandler(this));
+
 		Vector2 origin = new Vector2() ;
+
+		// Create box2d body for ground pieces
 		for(Ground ground : level.grounds)
 		{
 			BodyDef bodyDef = new BodyDef() ;
@@ -106,7 +96,7 @@ public class WorldController extends InputAdapter implements Disposable
 			ground.body = body ;
 			PolygonShape polygonShape = new PolygonShape() ;
 			origin.x = ground.bounds.width / 2.0f ;
-			origin.y = ground.bounds.height / 2.0f ;
+			origin.y = ground.bounds.height / 2.0f - 0.15f ;
 			polygonShape.setAsBox(ground.bounds.width / 2.0f, ground.bounds.height / 2.0f, origin, 0) ;
 			FixtureDef fixtureDef = new FixtureDef() ;
 			fixtureDef.shape = polygonShape ;
@@ -133,12 +123,13 @@ public class WorldController extends InputAdapter implements Disposable
 		// Set physics attributes
 		FixtureDef fixtureDef = new FixtureDef() ;
 		fixtureDef.shape = polygonShape ;
-		fixtureDef.density = 50 ;
+		fixtureDef.density = 5 ;
 
 		fixtureDef.friction = c.friction.x ;
 		body.createFixture(fixtureDef) ;
 		polygonShape.dispose() ;
 
+		// Create box2d body for ice collectibles
 		for(Ice ice : level.ice)
 		{
 			BodyDef bodyDef2 = new BodyDef() ;
@@ -157,6 +148,7 @@ public class WorldController extends InputAdapter implements Disposable
 			polygonShape2.dispose() ;
 		}
 
+		// Create box2d body for fire collectibles
 		for(Fire fire: level.fire)
 		{
 			BodyDef bodyDef3 = new BodyDef() ;
@@ -230,10 +222,10 @@ public class WorldController extends InputAdapter implements Disposable
 				backToMenu() ;
 			}
 		}
-			else
-			{
-				handleInputGame(deltaTime) ;
-			}
+		else
+		{
+			handleInputGame(deltaTime) ;
+		}
 		level.update(deltaTime) ;
 		cameraHelper.update(deltaTime) ;
 		if(!isGameOver() && isPlayerInLava())
@@ -261,6 +253,10 @@ public class WorldController extends InputAdapter implements Disposable
 		world.step(1/60.0f, 8, 3);
 	}
 
+	/**
+	 * When camera is not locked on player, this is used to move the camera
+	 * around the game world
+	 */
 	private void handleDebugInput (float deltaTime)
 	{
 		if (Gdx.app.getType() != ApplicationType.Desktop) return ;
@@ -296,7 +292,9 @@ public class WorldController extends InputAdapter implements Disposable
 		cameraHelper.setPosition(x, y) ;
 	}
 
-
+	/**
+	 * Handles what happens when a button is released
+	 */
 	@Override
 	public boolean keyUp (int keycode)
 	{
@@ -319,6 +317,9 @@ public class WorldController extends InputAdapter implements Disposable
 		return false ;
 	}
 
+	/**
+	 * Handles player input
+	 */
 	private void handleInputGame(float deltaTime)
 	{
 		if(cameraHelper.hasTarget(level.character))
@@ -345,7 +346,8 @@ public class WorldController extends InputAdapter implements Disposable
 				if(timeHeld < 1)
 				{
 					level.character.grounded = false ;
-					if(playJump == true)
+
+					if(playJump)
 					{
 						AudioManager.instance.play(Assets.instance.sounds.jump) ;
 						playJump = false ;
@@ -368,11 +370,17 @@ public class WorldController extends InputAdapter implements Disposable
 		}
 	}
 
+	/**
+	 * Adds object to array for future removal
+	 */
 	public void flagForRemoval(AbstractGameObject obj)
 	{
 		objectsToRemove.add(obj) ;
 	}
 
+	/**
+	 * Allows the character to jump again
+	 */
 	public void resetJump()
 	{
 		playJump = true ;

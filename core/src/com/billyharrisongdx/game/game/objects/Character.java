@@ -30,14 +30,6 @@ public class Character extends AbstractGameObject
 	}
 
 	/**
-	 * enum for used in controlling the characters state
-	 */
-	public enum JUMP_STATE
-	{
-		GROUNDED, FALLING, JUMP_RISING, JUMP_FALLING
-	}
-
-	/**
 	 * Information on the character
 	 * direction, power-up remaining, etc.
 	 */
@@ -46,7 +38,6 @@ public class Character extends AbstractGameObject
 
 	public VIEW_DIRECTION viewDirection ;
 	public float timeJumping ;
-	public JUMP_STATE jumpState ;
 	public static boolean hasFirePowerup ;
 	public static float timeLeftFirePowerup ;
 	public boolean grounded ;
@@ -68,7 +59,7 @@ public class Character extends AbstractGameObject
 		// Bounding box for collision detection
 		bounds.set(0, 0, dimension.x, dimension.y) ;
 		// Set physics values
-        terminalVelocity.set(300.0f, 1.5f);
+        terminalVelocity.set(30.0f, 1.5f);
         friction.set(0.4f, 0.0f);
 		// View direction
 		viewDirection = VIEW_DIRECTION.RIGHT ;
@@ -80,10 +71,6 @@ public class Character extends AbstractGameObject
 		// Particle
 		lavaDust.load(Gdx.files.internal("../core/assets/particles/lavaDust.part"), Gdx.files.internal("particles")) ;
 	}
-
-	/**
-	 * Controls what occurs during each version of jumpState
-	 */
 
 	/**
 	 * Used to activate fire power-up
@@ -126,6 +113,7 @@ public class Character extends AbstractGameObject
             }
         }
 
+        // Draws the particle effect when the player character is on the ground
         if(grounded)
         {
             lavaDust.setPosition(body.getPosition().x + dimension.x / 2, body.getPosition().y) ;
