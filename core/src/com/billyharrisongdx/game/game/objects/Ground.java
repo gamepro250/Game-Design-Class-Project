@@ -92,6 +92,7 @@ public class Ground extends AbstractGameObject
 		reg = regCenter ;
 		for(int i = 0; i < length; i++)
 		{
+		
 			batch.draw(reg.getTexture(), position.x + relX, position.y + relY,
 					origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y,
 					rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
@@ -114,18 +115,17 @@ public class Ground extends AbstractGameObject
 		super.update(deltaTime) ;
 
 		floatCycleTimeLeft -= deltaTime ;
-		if(floatTargetPosition == null)
-		{
-			floatTargetPosition = new Vector2(position) ;
-		}
+
 		if(floatCycleTimeLeft <= 0)
 		{
 			floatCycleTimeLeft = FLOAT_CYCLE_TIME ;
 			floatingDownwards = !floatingDownwards ;
-			floatTargetPosition.y += FLOAT_AMPLITUDE * (floatingDownwards ? -1 : 1) ;
+			body.setLinearVelocity(0, FLOAT_AMPLITUDE * (floatingDownwards ? -1 : 1)) ;
 		}
-
-		position.lerp(floatTargetPosition, deltaTime) ;
+		else
+		{
+			body.setLinearVelocity(body.getLinearVelocity().scl(0.98f));
+		}
 	}
 }
 

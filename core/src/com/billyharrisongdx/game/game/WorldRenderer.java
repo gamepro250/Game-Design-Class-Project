@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont ;
 import com.badlogic.gdx.utils.Align ;
 import com.billyharrisongdx.game.util.GamePreferences ;
 import com.badlogic.gdx.math.MathUtils ;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer ;
 
 public class WorldRenderer {
 
@@ -29,6 +30,9 @@ public class WorldRenderer {
 	private OrthographicCamera cameraGUI ; // Initialize camera to display the GUI
 	private SpriteBatch batch ;
 	private WorldController worldController ;
+
+	private static final boolean DEBUG_DRAW_BOX2D_WORLD = true ;
+	private Box2DDebugRenderer b2debugRenderer ;
 
 	/**
 	 * sets this renderer's worldController and initiates the renderer
@@ -51,8 +55,12 @@ public class WorldRenderer {
 
 		cameraGUI = new OrthographicCamera(Constants.VIEWPORT_GUI_WIDTH, Constants.VIEWPORT_GUI_HEIGHT) ; // Creates new camera for GUI
 		cameraGUI.position.set(0, 0, 0) ;
-		cameraGUI.setToOrtho(true) ; // flip y-axis
+		cameraGUI.setToOrtho(true) ;
+
+		// flip y-axis
 		cameraGUI.update() ;
+
+		b2debugRenderer = new Box2DDebugRenderer() ;
 	}
 
 	/**
@@ -75,6 +83,11 @@ public class WorldRenderer {
 		batch.begin() ;
 		worldController.level.render(batch) ;
 		batch.end() ;
+
+		if(DEBUG_DRAW_BOX2D_WORLD)
+		{
+			b2debugRenderer.render(worldController.world, camera.combined) ;
+		}
 	}
 
 	/**

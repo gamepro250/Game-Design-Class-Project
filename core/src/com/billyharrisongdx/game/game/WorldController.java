@@ -30,8 +30,17 @@ import com.billyharrisongdx.game.game.objects.Character.JUMP_STATE;
 import com.billyharrisongdx.game.screens.MenuScreen ;
 import com.badlogic.gdx.Game ;
 import com.billyharrisongdx.game.util.AudioManager ;
+import com.badlogic.gdx.math.MathUtils ;
+import com.badlogic.gdx.math.Vector2 ;
+import com.badlogic.gdx.physics.box2d.Body ;
+import com.badlogic.gdx.physics.box2d.BodyDef ;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType ;
+import com.badlogic.gdx.physics.box2d.FixtureDef ;
+import com.badlogic.gdx.physics.box2d.PolygonShape ;
+import com.badlogic.gdx.physics.box2d.World ;
+import com.badlogic.gdx.utils.Disposable ;
 
-public class WorldController extends InputAdapter
+public class WorldController extends InputAdapter implements Disposable
 {
 	// Tags are required for all debug messages
 	private static final String TAG = WorldController.class.getName() ;
@@ -43,6 +52,8 @@ public class WorldController extends InputAdapter
 	public int score ;
 	public float livesVisual ;
 	public float scoreVisual ;
+
+	public World world ;
 
 	// Rectangles for collision detection
 	private Rectangle r1 = new Rectangle() ;
@@ -69,6 +80,56 @@ public class WorldController extends InputAdapter
 		scoreVisual = score ;
 		level = new Level(Constants.LEVEL_01) ; // Initiates level using LEVEL_01 map
 		cameraHelper.setTarget(level.character) ;
+		initPhysics() ;
+	}
+
+	private void initPhysics()
+	{
+		if(world != null) world.dispose() ;
+		world = new World(new Vector2(0, -9.81f), true) ;
+		Vector2 origin = new Vector2() ;
+		for(Ground ground : level.grounds)
+		{
+			BodyDef bodyDef = new BodyDef() ;
+			bodyDef.type = BodyType.KinematicBody ;
+			bodyDef.position.set(ground.position) ;
+				Body body = world.createBody(bodyDef) ;
+			ground.body = body ;
+			PolygonShape polygonShape = new PolygonShape() ;
+			origin.x = ground.bounds.width / 2.0f ;
+			origin.y = ground.bounds.height / 2.0f ;
+			polygonShape.setAsBox(ground.bounds.width / 2.0f, ground.bounds.height / 2.0f, origin, 0) ;
+			FixtureDef fixtureDef = new FixtureDef() ;
+			fixtureDef.shape = polygonShape ;
+			body.createFixture(fixtureDef) ;
+			polygonShape.dispose() ;
+		}
+
+
+		// Create box2d body for character
+		Character c = level.character ;
+
+		BodyDef bodyDef = new BodyDef() ;
+		bodyDef.type = BodyType.DynamicBody ;
+		bodyDef.position.set(c.position) ;
+		bodyDef.fixedRotation = true ;
+			Body body = world.createBody(bodyDef) ;
+		c.body = body ;
+		PolygonShape polygonShape = new PolygonShape() ;
+
+		origin.x = c.bounds.width / 2.0f ;
+		origin.y = c.bounds.height / 2.0f ;
+
+		polygonShape.setAsBox(c.bounds.width / 2.0f, c.bounds.height / 2.0f, origin, 0) ;
+		// Set physics attributes
+		FixtureDef fixtureDef = new FixtureDef() ;
+		fixtureDef.shape = polygonShape ;
+		fixtureDef.density = 50 ;
+
+		fixtureDef.friction = c.friction.x ;
+		body.createFixture(fixtureDef) ;
+		polygonShape.dispose() ;
+
 	}
 
 	/**
@@ -83,7 +144,6 @@ public class WorldController extends InputAdapter
 		timeLeftGameOverDelay = 0 ;
 		initLevel() ;
 	}
-
 
 
 //	/**
@@ -147,6 +207,8 @@ public class WorldController extends InputAdapter
 		{
 			scoreVisual = Math.min(score, scoreVisual + 250 * deltaTime) ;
 		}
+
+		world.step(1/60.0f, 8, 3);
 	}
 
 	private void handleDebugInput (float deltaTime)
@@ -215,10 +277,12 @@ public class WorldController extends InputAdapter
 			if(Gdx.input.isKeyPressed(Keys.LEFT))
 			{
 				level.character.velocity.x = -level.character.terminalVelocity.x ;
+				level.character.body.setLinearVelocity(-level.character.terminalVelocity.x, level.character.velocity.y);
 			}
 			else if(Gdx.input.isKeyPressed(Keys.RIGHT))
 			{
 				level.character.velocity.x = level.character.terminalVelocity.x ;
+				level.character.body.setLinearVelocity(level.character.terminalVelocity.x, level.character.velocity.y);
 			}
 			else
 			{
@@ -240,7 +304,7 @@ public class WorldController extends InputAdapter
 			}
 		}
 	}
-
+/*
 	private void onCollisionBunnyHeadWithGround(Ground ground)
 	{
 		Character character = level.character ;
@@ -274,7 +338,7 @@ public class WorldController extends InputAdapter
 				break ;
 		}
 	}
-
+*/
 	private void onCollisionBunnyWithIce(Ice ice)
 	{
 		ice.collected = true ;
@@ -305,7 +369,7 @@ public class WorldController extends InputAdapter
 			r2.set(ground.position.x, ground.position.y, ground.bounds.width,
 					ground.bounds.height) ;
 			if(!r1.overlaps(r2)) continue ;
-			onCollisionBunnyHeadWithGround(ground) ;
+			//onCollisionBunnyHeadWithGround(ground) ;
 			// IMPORTANT: must do all collisions for valid
 			// edge testing on ground
 		}
@@ -356,5 +420,11 @@ public class WorldController extends InputAdapter
 	{
 		// Switch to menu screen
 		game.setScreen(new MenuScreen(game)) ;
+	}
+
+	@Override
+	public void dispose()
+	{
+		if(world != null) world.dispose() ;
 	}
 }
