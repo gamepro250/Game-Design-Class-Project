@@ -37,14 +37,19 @@ public class CollisionHandler implements ContactListener
     {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
+        AbstractGameObject objA = (AbstractGameObject)fixtureA.getBody().getUserData();
+        AbstractGameObject objB = (AbstractGameObject)fixtureB.getBody().getUserData();
 
-       processContact(contact);
+        processContact(contact);
 
-        ContactListener listener = getListener(fixtureA.getFilterData().categoryBits, fixtureB.getFilterData().categoryBits);
-        if (listener != null)
+        if(!(objA instanceof Ice) && !(objB instanceof Ice))
         {
-            listener.beginContact(contact);
-        }
+       		ContactListener listener = getListener(fixtureA.getFilterData().categoryBits, fixtureB.getFilterData().categoryBits);
+	        if (listener != null)
+	        {
+	            listener.beginContact(contact);
+	        }
+    	}
     }
 
     @Override
@@ -145,6 +150,7 @@ public class CollisionHandler implements ContactListener
 
     		Ice ice = (Ice)objFixture.getBody().getUserData() ;
     		world.flagForRemoval(ice) ;
+    		
     	}
     	else if (objFixture.getBody().getUserData() instanceof Fire)
     	{

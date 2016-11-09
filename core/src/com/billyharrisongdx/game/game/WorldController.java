@@ -144,6 +144,7 @@ public class WorldController extends InputAdapter implements Disposable
 			polygonShape.setAsBox(ice.bounds.width / 2.0f, ice.bounds.height / 2.0f, origin, 0) ;
 			FixtureDef fixtureDef2 = new FixtureDef() ;
 			fixtureDef2.shape = polygonShape2 ;
+			fixtureDef2.density = 5 ;
 			body2.createFixture(fixtureDef2) ;
 			polygonShape2.dispose() ;
 		}
@@ -343,7 +344,15 @@ public class WorldController extends InputAdapter implements Disposable
 			// Character Jump
 			if(Gdx.input.isTouched() || Gdx.input.isKeyPressed(Keys.SPACE))
 			{
-				if(timeHeld < 1)
+				Vector2 vel = level.character.body.getLinearVelocity() ;
+
+				if(level.character.hasFirePowerup() && timeHeld < 0.75)
+				{
+					level.character.body.setLinearVelocity(vel.x, level.character.terminalVelocity.y) ;
+
+					timeHeld += deltaTime ;
+				}
+				else if(timeHeld < .5)
 				{
 					level.character.grounded = false ;
 
@@ -352,16 +361,9 @@ public class WorldController extends InputAdapter implements Disposable
 						AudioManager.instance.play(Assets.instance.sounds.jump) ;
 						playJump = false ;
 					}
-					Vector2 vel = level.character.body.getLinearVelocity() ;
 
-					if(level.character.hasFirePowerup())
-					{
-						level.character.body.setLinearVelocity(vel.x, level.character.terminalVelocity.y * 2) ;
-					}
-					else
-					{
-						level.character.body.setLinearVelocity(vel.x, level.character.terminalVelocity.y) ;
-					}
+					level.character.body.setLinearVelocity(vel.x, level.character.terminalVelocity.y) ;
+
 					level.character.position.set(level.character.body.getPosition()) ;
 
 					timeHeld += deltaTime ;

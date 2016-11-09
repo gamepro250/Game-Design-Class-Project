@@ -59,7 +59,7 @@ public class Character extends AbstractGameObject
 		// Bounding box for collision detection
 		bounds.set(0, 0, dimension.x, dimension.y) ;
 		// Set physics values
-        terminalVelocity.set(30.0f, 1.5f);
+        terminalVelocity.set(30.0f, 3f);
         friction.set(0.4f, 0.0f);
 		// View direction
 		viewDirection = VIEW_DIRECTION.RIGHT ;
