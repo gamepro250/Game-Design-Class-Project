@@ -8,11 +8,13 @@
 
 package com.billyharrisongdx.game.game.objects ;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch ;
 import com.badlogic.gdx.math.Vector2 ;
 import com.badlogic.gdx.math.Rectangle ;
 import com.badlogic.gdx.math.MathUtils ;
 import com.badlogic.gdx.physics.box2d.Body ;
+import com.badlogic.gdx.graphics.g2d.Animation ;
 
 /**
  * Contains methods that must be inherited by all classes that
@@ -31,6 +33,8 @@ public abstract class AbstractGameObject
 	public Vector2 scale ;
 	public float rotation ;
 	public Body body ;
+	public float stateTime ;
+	public Animation animation ;
 
 	/**
 	 * This set of variables holds the movement information and the
@@ -65,6 +69,7 @@ public abstract class AbstractGameObject
 	 */
 	public void update(float deltaTime)
 	{
+		stateTime += deltaTime ;
 		if(body == null)
 		{
 			updateMotionX(deltaTime) ;
@@ -130,6 +135,12 @@ public abstract class AbstractGameObject
 		// Make sure the object's velocity does not exceed the
 		// Positive or negative terminal velocity
 		velocity.y = MathUtils.clamp(velocity.y, -terminalVelocity.y, terminalVelocity.y) ;
+	}
+
+	public void setAnimation(Animation animation)
+	{
+		this.animation = animation ;
+		stateTime = 0 ;
 	}
 
 	public abstract void render(SpriteBatch batch) ;

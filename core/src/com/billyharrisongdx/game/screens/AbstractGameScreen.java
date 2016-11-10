@@ -28,6 +28,8 @@ public abstract class AbstractGameScreen implements Screen
 		public abstract void hide() ;
 		public abstract void pause() ;
 
+
+
 		public void resume()
 		{
 			Assets.instance.init(new AssetManager()) ;
