@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector2 ;
 import com.badlogic.gdx.math.Rectangle ;
 import com.badlogic.gdx.math.MathUtils ;
 import com.badlogic.gdx.physics.box2d.Body ;
+import com.badlogic.gdx.graphics.g2d.Animation ;
 
 /**
  * Contains methods that must be inherited by all classes that
@@ -30,6 +31,8 @@ public abstract class AbstractGameObject
 	public Vector2 origin ;
 	public Vector2 scale ;
 	public float rotation ;
+	public float stateTime ;
+	public Animation animation ;
 
 	/**
 	 * This set of variables holds the movement information and the
@@ -61,11 +64,19 @@ public abstract class AbstractGameObject
 		bounds = new Rectangle() ;
 	}
 
+	public void setAnimation(Animation animation)
+	{
+		this.animation = animation ;
+		stateTime = 0 ;
+	}
+
 	/**
 	 * Updates and applies any movement that was taken
 	 */
 	public void update(float deltaTime)
 	{
+		stateTime += deltaTime ;
+
 		updateMotionX(deltaTime) ;
 		updateMotionY(deltaTime) ;
 

@@ -65,9 +65,11 @@ public class GameScreen extends AbstractGameScreen
 	@Override
 	public void hide()
 	{
-		worldController.dispose() ;
+		Gdx.app.postRunnable(() ->{
 		worldRenderer.dispose() ;
+		worldController.dispose() ;
 		Gdx.input.setCatchBackKey(false) ;
+		}) ;
 	}
 
 	@Override

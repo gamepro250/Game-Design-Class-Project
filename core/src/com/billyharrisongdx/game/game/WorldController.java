@@ -96,7 +96,7 @@ public class WorldController extends InputAdapter implements Disposable
 			ground.body = body ;
 			PolygonShape polygonShape = new PolygonShape() ;
 			origin.x = ground.bounds.width / 2.0f ;
-			origin.y = ground.bounds.height / 2.0f - 0.15f ;
+			origin.y = ground.bounds.height / 2.0f - 0.25f ;
 			polygonShape.setAsBox(ground.bounds.width / 2.0f, ground.bounds.height / 2.0f, origin, 0) ;
 			FixtureDef fixtureDef = new FixtureDef() ;
 			fixtureDef.shape = polygonShape ;
@@ -315,6 +315,10 @@ public class WorldController extends InputAdapter implements Disposable
 		{
 			backToMenu() ;
 		}
+		else if(keycode == Keys.LEFT || keycode == Keys.RIGHT)
+		{
+			level.character.running = false ;
+		}
 		return false ;
 	}
 
@@ -332,14 +336,15 @@ public class WorldController extends InputAdapter implements Disposable
 				Vector2 vel = level.character.body.getLinearVelocity() ;
 				//level.character.body.setLinearVelocity(-level.character.terminalVelocity.x, vel.y);
 				level.character.body.applyForceToCenter(-level.character.terminalVelocity.x, vel.y, true);
+				level.character.running = true ;
 			}
 			else if(Gdx.input.isKeyPressed(Keys.RIGHT))
 			{
-
 				level.character.viewDirection = Character.VIEW_DIRECTION.RIGHT ;
 				Vector2 vel = level.character.body.getLinearVelocity() ;
 				//level.character.body.setLinearVelocity(level.character.terminalVelocity.x, vel.y);
 				level.character.body.applyForceToCenter(level.character.terminalVelocity.x, vel.y, true);
+				level.character.running = true ;
 			}
 			// Character Jump
 			if(Gdx.input.isTouched() || Gdx.input.isKeyPressed(Keys.SPACE))

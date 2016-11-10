@@ -21,6 +21,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter ;
 import com.badlogic.gdx.graphics.g2d.BitmapFont ;
 import com.badlogic.gdx.audio.Music ;
 import com.badlogic.gdx.audio.Sound ;
+import com.badlogic.gdx.graphics.g2d.Animation ;
+import com.badlogic.gdx.utils.Array ;
 
 public class Assets implements Disposable, AssetErrorListener
 {
@@ -150,11 +152,18 @@ public class Assets implements Disposable, AssetErrorListener
 	{
 		public final AtlasRegion character ;
 		public final AtlasRegion characterHead ;
+		public final Animation runAnim ;
 
 		public AssetCharacter (TextureAtlas atlas)
 		{
-			character = atlas.findRegion("Character") ;
+			character = atlas.findRegion("run") ;
 			characterHead = atlas.findRegion("Character_Head") ;
+
+			Array<AtlasRegion> regions = null ;
+
+			// Run Animation
+			regions = atlas.findRegions("run") ;
+			runAnim = new Animation(1.0f / 10.0f, regions, Animation.PlayMode.NORMAL) ;
 		}
 	}
 

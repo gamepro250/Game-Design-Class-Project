@@ -16,6 +16,7 @@ import com.billyharrisongdx.game.util.Constants ;
 import com.billyharrisongdx.game.util.GamePreferences ;
 import com.billyharrisongdx.game.util.CharacterSkin ;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect ;
+import com.badlogic.gdx.graphics.g2d.Animation ;
 
 public class Character extends AbstractGameObject
 {
@@ -35,12 +36,15 @@ public class Character extends AbstractGameObject
 	 */
 	private TextureRegion regHead ;
 	private ParticleEffect lavaDust = new ParticleEffect() ;
+	private Animation runAnim ;
 
 	public VIEW_DIRECTION viewDirection ;
 	public float timeJumping ;
 	public static boolean hasFirePowerup ;
 	public static float timeLeftFirePowerup ;
 	public boolean grounded ;
+	public boolean running ;
+
 	public Character()
 	{
 		init() ;
@@ -53,7 +57,12 @@ public class Character extends AbstractGameObject
 	public void init()
 	{
 		dimension.set(1, 1) ;
+
+		runAnim = Assets.instance.character.runAnim ;
+		setAnimation(runAnim) ;
+
 		regHead = Assets.instance.character.character ;
+
 		// Center image on game object
 		origin.set(dimension.x / 2, dimension.y / 2) ;
 		// Bounding box for collision detection
@@ -102,6 +111,11 @@ public class Character extends AbstractGameObject
     {
         super.update(deltaTime);
 
+/*        if(walking)
+        {
+        	setAnimation(runAnim) ;
+        }
+*/
         if (timeLeftFirePowerup > 0)
         {
             timeLeftFirePowerup -= deltaTime;
@@ -149,7 +163,14 @@ public class Character extends AbstractGameObject
 		}
 
 		// Draw image
-		reg = regHead ;
+		if(running && grounded)
+		{
+			reg = animation.getKeyFrame(stateTime, true) ;
+		}
+		else
+		{
+			reg = regHead ;
+		}
 		batch.draw(reg.getTexture(), position.x, position.y, origin.x, origin.y,
 				dimension.x, dimension.y, scale.x, scale.y, rotation, reg.getRegionX(),
 				reg.getRegionY(),reg.getRegionWidth(), reg.getRegionHeight(), viewDirection == VIEW_DIRECTION.LEFT, false) ;
