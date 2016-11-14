@@ -16,7 +16,7 @@ import com.billyharrisongdx.game.CanyonBunnyMain;
 
 
 public class DesktopLauncher {
-	private static boolean rebuildAtlas = false ; // Tells whether or not to build atlas
+	private static boolean rebuildAtlas = true ; // Tells whether or not to build atlas
 	private static boolean drawDebugOutline = false ; // Draw box around displayed images
 
 	public static void main (String[] arg)
