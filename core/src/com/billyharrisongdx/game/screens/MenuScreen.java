@@ -44,14 +44,14 @@ public class MenuScreen extends AbstractGameScreen
 	private static final String TAG = MenuScreen.class.getName() ;
 
 	private Stage stage ;
-	private Skin skinCanyonBunny ;
+	private Skin skinMygame ;
 
 	// Menu
 	private Image imgBackground ;
-	private Image imgLogo ;
-	private Image imgInfo ;
-	private Image imgCoins ;
-	private Image imgBunny ;
+	private Image imgIce ;
+	private Image imgTitle ;
+	private Image imgChar ;
+	private Image imgPlatform ;
 	private Button btnMenuPlay ;
 	private Button btnMenuOptions ;
 
@@ -80,13 +80,12 @@ public class MenuScreen extends AbstractGameScreen
 
 	private void rebuildStage()
 	{
-		skinCanyonBunny = new Skin(Gdx.files.internal(Constants.SKIN_CANYONBUNNY_UI), new TextureAtlas(Constants.TEXTURE_ATLAS_UI)) ;
+		skinMygame = new Skin(Gdx.files.internal(Constants.SKIN_MYGAME_UI), new TextureAtlas(Constants.TEXTURE_ATLAS_UI)) ;
 
 		skinLibgdx = new Skin(Gdx.files.internal(Constants.SKIN_LIBGDX_UI), new TextureAtlas(Constants.TEXTURE_ATLAS_LIBGDX_UI)) ;
 		// Build all layers
 		Table layerBackground = buildBackgroundLayer() ;
 		Table layerObjects = buildObjectsLayer() ;
-		Table layerLogos = buildLogosLayer() ;
 		Table layerControls = buildControlsLayer() ;
 		Table layerOptionsWindow = buildOptionsWindowLayer() ;
 
@@ -97,7 +96,6 @@ public class MenuScreen extends AbstractGameScreen
 		stack.setSize(Constants.VIEWPORT_GUI_WIDTH, Constants.VIEWPORT_GUI_HEIGHT) ;
 		stack.add(layerBackground) ;
 		stack.add(layerObjects) ;
-		stack.add(layerLogos) ;
 		stack.add(layerControls) ;
 		stage.addActor(layerOptionsWindow) ;
 	}
@@ -109,7 +107,7 @@ public class MenuScreen extends AbstractGameScreen
 	{
 		Table layer = new Table() ;
 		// + Background
-		imgBackground = new Image(skinCanyonBunny, "background") ;
+		imgBackground = new Image(skinMygame, "Volcano") ;
 		layer.add(imgBackground) ;
 		return layer ;
 	}
@@ -120,49 +118,214 @@ public class MenuScreen extends AbstractGameScreen
 	private Table buildObjectsLayer()
 	{
 		Table layer = new Table() ;
+
+		imgTitle = new Image(skinMygame, "Title") ;
+		layer.addActor(imgTitle) ;
+		imgTitle.setOrigin(imgTitle.getWidth() / 2, imgTitle.getHeight() / 2) ;
+		imgTitle.addAction(sequence(
+
+				parallel(moveBy(75, 300, 0.5f, Interpolation.swingOut),
+					scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+					alpha(1.0f, 0.5f)))) ;
+
+		imgPlatform = new Image(skinMygame, "Platform") ;
+		layer.addActor(imgPlatform) ;
+		imgPlatform.setOrigin(imgPlatform.getWidth() / 2, imgPlatform.getHeight() / 2) ;
+		imgPlatform.addAction(sequence(
+
+				parallel(moveBy(0, 0, 0.5f, Interpolation.swingOut),
+					scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+					alpha(1.0f, 0.5f)))) ;
+
+		imgPlatform = new Image(skinMygame, "Platform") ;
+		layer.addActor(imgPlatform) ;
+		imgPlatform.setOrigin(imgPlatform.getWidth() / 2, imgPlatform.getHeight() / 2) ;
+		imgPlatform.addAction(sequence(
+
+				parallel(moveBy(75.0f, 0, 0.5f, Interpolation.swingOut),
+					scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+					alpha(1.0f, 0.5f)))) ;
+
+		imgPlatform = new Image(skinMygame, "Platform") ;
+		layer.addActor(imgPlatform) ;
+		imgPlatform.setOrigin(imgPlatform.getWidth() / 2, imgPlatform.getHeight() / 2) ;
+		imgPlatform.addAction(sequence(
+
+				parallel(moveBy(150.0f, 100.0f, 0.5f, Interpolation.swingOut),
+					scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+					alpha(1.0f, 0.5f)))) ;
+
+		imgPlatform = new Image(skinMygame, "Platform") ;
+		layer.addActor(imgPlatform) ;
+		imgPlatform.setOrigin(imgPlatform.getWidth() / 2, imgPlatform.getHeight() / 2) ;
+		imgPlatform.addAction(sequence(
+
+				parallel(moveBy(225.0f, 100.0f, 0.5f, Interpolation.swingOut),
+					scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+					alpha(1.0f, 0.5f)))) ;
+
+		imgPlatform = new Image(skinMygame, "Platform") ;
+		layer.addActor(imgPlatform) ;
+		imgPlatform.setOrigin(imgPlatform.getWidth() / 2, imgPlatform.getHeight() / 2) ;
+		imgPlatform.addAction(sequence(
+
+				parallel(moveBy(300.0f, 100.0f, 0.5f, Interpolation.swingOut),
+					scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+					alpha(1.0f, 0.5f)))) ;
+
+		imgPlatform = new Image(skinMygame, "Platform") ;
+		layer.addActor(imgPlatform) ;
+		imgPlatform.setOrigin(imgPlatform.getWidth() / 2, imgPlatform.getHeight() / 2) ;
+		imgPlatform.addAction(sequence(
+
+				parallel(moveBy(400.0f, 200.0f, 0.5f, Interpolation.swingOut),
+					scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+					alpha(1.0f, 0.5f)))) ;
+
+		imgPlatform = new Image(skinMygame, "Platform") ;
+		layer.addActor(imgPlatform) ;
+		imgPlatform.setOrigin(imgPlatform.getWidth() / 2, imgPlatform.getHeight() / 2) ;
+		imgPlatform.addAction(sequence(
+
+				parallel(moveBy(475.0f, 200.0f, 0.5f, Interpolation.swingOut),
+					scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+					alpha(1.0f, 0.5f)))) ;
+
+		imgPlatform = new Image(skinMygame, "Platform") ;
+		layer.addActor(imgPlatform) ;
+		imgPlatform.setOrigin(imgPlatform.getWidth() / 2, imgPlatform.getHeight() / 2) ;
+		imgPlatform.addAction(sequence(
+
+				parallel(moveBy(575.0f, 300.0f, 0.5f, Interpolation.swingOut),
+					scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+					alpha(1.0f, 0.5f)))) ;
+
+		imgPlatform = new Image(skinMygame, "Platform") ;
+		layer.addActor(imgPlatform) ;
+		imgPlatform.setOrigin(imgPlatform.getWidth() / 2, imgPlatform.getHeight() / 2) ;
+		imgPlatform.addAction(sequence(
+
+				parallel(moveBy(650.0f, 300.0f, 0.5f, Interpolation.swingOut),
+					scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+					alpha(1.0f, 0.5f)))) ;
+
+		imgPlatform = new Image(skinMygame, "Platform") ;
+		layer.addActor(imgPlatform) ;
+		imgPlatform.setOrigin(imgPlatform.getWidth() / 2, imgPlatform.getHeight() / 2) ;
+		imgPlatform.addAction(sequence(
+
+				parallel(moveBy(725.0f, 300.0f, 0.5f, Interpolation.swingOut),
+					scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+					alpha(1.0f, 0.5f)))) ;
+
 		// + Coins
-		imgCoins = new Image(skinCanyonBunny, "coins") ;
-		layer.addActor(imgCoins) ;
-		imgCoins.setOrigin(imgCoins.getWidth() / 2, imgCoins.getHeight() / 2) ;
-		imgCoins.addAction(sequence(
-			moveTo(135, -20),
+		imgIce = new Image(skinMygame, "Ice") ;
+		layer.addActor(imgIce) ;
+		imgIce.setOrigin(imgIce.getWidth() / 2, imgIce.getHeight() / 2) ;
+		imgIce.addAction(sequence(
+			moveTo(185, -20),
 			scaleTo(0, 0),
 			fadeOut(0),
 			delay(2.5f),
-			parallel(moveBy(0, 100, 0.5f, Interpolation.swingOut),
+			parallel(moveBy(0, 250, 0.5f, Interpolation.swingOut),
 				scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
 				alpha(1.0f, 0.5f)))) ;
+
+		imgIce = new Image(skinMygame, "Ice") ;
+		layer.addActor(imgIce) ;
+		imgIce.setOrigin(imgIce.getWidth() / 2, imgIce.getHeight() / 2) ;
+		imgIce.addAction(sequence(
+			moveTo(260, -20),
+			scaleTo(0, 0),
+			fadeOut(0),
+			delay(2.5f),
+			parallel(moveBy(0, 250, 0.5f, Interpolation.swingOut),
+				scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+				alpha(1.0f, 0.5f)))) ;
+
+		imgIce = new Image(skinMygame, "Ice") ;
+		layer.addActor(imgIce) ;
+		imgIce.setOrigin(imgIce.getWidth() / 2, imgIce.getHeight() / 2) ;
+		imgIce.addAction(sequence(
+			moveTo(335, -20),
+			scaleTo(0, 0),
+			fadeOut(0),
+			delay(2.5f),
+			parallel(moveBy(0, 250, 0.5f, Interpolation.swingOut),
+				scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+				alpha(1.0f, 0.5f)))) ;
+
+		imgIce = new Image(skinMygame, "Ice") ;
+		layer.addActor(imgIce) ;
+		imgIce.setOrigin(imgIce.getWidth() / 2, imgIce.getHeight() / 2) ;
+		imgIce.addAction(sequence(
+			moveTo(435, -20),
+			scaleTo(0, 0),
+			fadeOut(0),
+			delay(2.5f),
+			parallel(moveBy(0, 350, 0.5f, Interpolation.swingOut),
+				scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+				alpha(1.0f, 0.5f)))) ;
+
+		imgIce = new Image(skinMygame, "Ice") ;
+		layer.addActor(imgIce) ;
+		imgIce.setOrigin(imgIce.getWidth() / 2, imgIce.getHeight() / 2) ;
+		imgIce.addAction(sequence(
+			moveTo(510, -20),
+			scaleTo(0, 0),
+			fadeOut(0),
+			delay(2.5f),
+			parallel(moveBy(0, 350, 0.5f, Interpolation.swingOut),
+				scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+				alpha(1.0f, 0.5f)))) ;
+
+		imgIce = new Image(skinMygame, "Ice") ;
+		layer.addActor(imgIce) ;
+		imgIce.setOrigin(imgIce.getWidth() / 2, imgIce.getHeight() / 2) ;
+		imgIce.addAction(sequence(
+			moveTo(610, -20),
+			scaleTo(0, 0),
+			fadeOut(0),
+			delay(2.5f),
+			parallel(moveBy(0, 450, 0.5f, Interpolation.swingOut),
+				scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+				alpha(1.0f, 0.5f)))) ;
+
+		imgIce = new Image(skinMygame, "Ice") ;
+		layer.addActor(imgIce) ;
+		imgIce.setOrigin(imgIce.getWidth() / 2, imgIce.getHeight() / 2) ;
+		imgIce.addAction(sequence(
+			moveTo(685, -20),
+			scaleTo(0, 0),
+			fadeOut(0),
+			delay(2.5f),
+			parallel(moveBy(0, 450, 0.5f, Interpolation.swingOut),
+				scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+				alpha(1.0f, 0.5f)))) ;
+
+		imgIce = new Image(skinMygame, "Ice") ;
+		layer.addActor(imgIce) ;
+		imgIce.setOrigin(imgIce.getWidth() / 2, imgIce.getHeight() / 2) ;
+		imgIce.addAction(sequence(
+			moveTo(760, -20),
+			scaleTo(0, 0),
+			fadeOut(0),
+			delay(2.5f),
+			parallel(moveBy(0, 450, 0.5f, Interpolation.swingOut),
+				scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+				alpha(1.0f, 0.5f)))) ;
+
 		// + Bunny
-		imgBunny = new Image(skinCanyonBunny, "bunny") ;
-		layer.addActor(imgBunny) ;
-		imgBunny.addAction(sequence(
-				moveTo(655, 510),
+		imgChar = new Image(skinMygame, "Character") ;
+		layer.addActor(imgChar) ;
+		imgChar.addAction(sequence(
+				moveTo(-100, -100),
+				fadeOut(0),
 				delay(4.0f),
-				moveBy(-70, -100, 0.5f, Interpolation.fade),
-				moveBy(-100, -50, 0.5f, Interpolation.fade),
-				moveBy(-150, -300, 1.0f, Interpolation.elasticIn))) ;
+				moveTo(20, 90),
+				fadeIn(1)
+				)) ;
 
-		return layer ;
-	}
-
-	/**
-	 * Adds the logo images to the window
-	 */
-	private Table buildLogosLayer()
-	{
-		Table layer = new Table() ;
-		layer.left().top() ;
-		// + Game Logo
-		imgLogo = new Image(skinCanyonBunny, "logo") ;
-		layer.add(imgLogo) ;
-		layer.row().expandY() ;
-		// + Info Logos
-		imgInfo = new Image(skinCanyonBunny, "info") ;
-		layer.add(imgInfo).bottom() ;
-		if(debugEnabled)
-		{
-			layer.debug() ;
-		}
 		return layer ;
 	}
 
@@ -174,7 +337,7 @@ public class MenuScreen extends AbstractGameScreen
 		Table layer = new Table() ;
 		layer.right().bottom() ;
 		// + Play Button
-		btnMenuPlay = new Button(skinCanyonBunny, "play") ;
+		btnMenuPlay = new Button(skinMygame, "play") ;
 		layer.add(btnMenuPlay) ;
 		btnMenuPlay.addListener(new ChangeListener()
 		{
@@ -186,7 +349,7 @@ public class MenuScreen extends AbstractGameScreen
 		}) ;
 		layer.row() ;
 		//+ Options Button
-		btnMenuOptions = new Button(skinCanyonBunny, "options") ;
+		btnMenuOptions = new Button(skinMygame, "options") ;
 		layer.add(btnMenuOptions) ;
 		btnMenuOptions.addListener(new ChangeListener()
 		{
@@ -235,7 +398,7 @@ public class MenuScreen extends AbstractGameScreen
 	 */
 	private void onPlayClicked()
 	{
-		game.setScreen(new GameScreen(game)) ;
+		game.setScreen(new GameScreen(game, Constants.LEVEL_01, 0, Constants.LIVES_START)) ;
 	}
 
 	/**
@@ -509,7 +672,7 @@ public class MenuScreen extends AbstractGameScreen
 	@Override public void hide()
 	{
 		stage.dispose() ;
-		skinCanyonBunny.dispose() ;
+		skinMygame.dispose() ;
 	}
 
 	@Override public void pause(){}

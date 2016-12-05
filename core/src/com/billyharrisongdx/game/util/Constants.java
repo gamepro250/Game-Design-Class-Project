@@ -29,6 +29,9 @@ public class Constants
 	// Location of image file for level 01
 	public static final String LEVEL_01 = "../core/assets/levels/My_level-01.png" ;
 
+	// Location of image file for level 02
+	public static final String LEVEL_02 = "../core/assets/levels/My_level-02.png" ;
+
 	// Amount of extra lives at level start
 	public static final int LIVES_START = 3 ;
 
@@ -38,14 +41,16 @@ public class Constants
 	// Delay after game over
 	public static final float TIME_DELAY_GAME_OVER = 3 ;
 
-	public static final String TEXTURE_ATLAS_UI = "../core/assets/images/canyonbunny-ui.pack.atlas" ;
+	public static final float LEVEL_END_DELAY = 3 ;
+
+	public static final String TEXTURE_ATLAS_UI = "../core/assets/images/mygame-ui.pack.atlas" ;
 
 	public static final String TEXTURE_ATLAS_LIBGDX_UI = "../core/assets/images/uiskin.atlas" ;
 
 	// Location of description file for skins
 	public static final String SKIN_LIBGDX_UI = "../core/assets/images/uiskin.json" ;
 
-	public static final String SKIN_CANYONBUNNY_UI = "../core/assets/images/canyonbunny-ui.json" ;
+	public static final String SKIN_MYGAME_UI = "../core/assets/images/mygame-ui.json" ;
 
 	public static final String PREFERENCES = "canyonbunny.prefs" ;
 }

@@ -20,7 +20,7 @@ import com.billyharrisongdx.game.game.Assets ;
  */
 public class Volcano extends AbstractGameObject
 {
-	private TextureRegion regVolcano ; // Location of the left mountain in the texture atlas
+	private TextureRegion regVolcano ;
 
 
 	private int length ; // length of mountain range on screen
@@ -33,7 +33,7 @@ public class Volcano extends AbstractGameObject
 
 	private void init()
 	{
-		dimension.set(10, 2) ;
+		dimension.set(15, 5) ;
 
 		regVolcano = Assets.instance.levelDecoration.volcano ;
 
@@ -55,7 +55,7 @@ public class Volcano extends AbstractGameObject
 
 			reg = regVolcano ;
 			batch.draw(reg.getTexture(), origin.x + dimension.x * i, position.y - 1,
-					origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y * 3, rotation,
+					origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y * 4, rotation,
 					reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(), reg.getRegionHeight(), false, false) ;
 
 		}

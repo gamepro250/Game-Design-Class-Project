@@ -8,6 +8,8 @@
 
 package com.billyharrisongdx.game.game.objects;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch ;
 import com.badlogic.gdx.graphics.g2d.TextureRegion ;
 import com.billyharrisongdx.game.game.Assets ;
@@ -53,7 +55,7 @@ public class Ground extends AbstractGameObject
 	{
 		this.length = length ;
 		// Update bounding box for collision detection
-		bounds.set(0, 0, dimension.x * length, dimension.y) ;
+		bounds.set(0, 0, dimension.x * length, dimension.y/2) ;
 	}
 
 	/**
@@ -69,41 +71,80 @@ public class Ground extends AbstractGameObject
 	 * Implementation of AbstractGameObject render method
 	 */
 	@Override
-	public void render(SpriteBatch batch)
+	public void render(SpriteBatch batch, boolean slow)
 	{
-		TextureRegion reg = null ;
-
-		float relX = 0 ;
-		float relY = 0 ;
-
-		// Draw left edge
-		reg = regLeft ;
-		relX -= dimension.x / 4 ;
-		batch.draw(reg.getTexture(), position.x + relX, position.y + relY,
-				origin.x, origin.y, dimension.x / 4, dimension.y, scale.x, scale.y,
-				rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
-				reg.getRegionHeight(), false, false) ;
-
-		// Draw middle
-		relX = 0 ;
-		reg = regCenter ;
-		for(int i = 0; i < length; i++)
+		if(slow)
 		{
+			TextureRegion reg = null ;
+			float relX = 0 ;
+			float relY = -0.75f ;
 
+			batch.setColor(.5f, .5f, .5f, 1.0f);
+
+			// Draw left edge
+			reg = regLeft ;
+			relX -= dimension.x / 4 ;
 			batch.draw(reg.getTexture(), position.x + relX, position.y + relY,
-					origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y,
+					origin.x, origin.y, dimension.x / 4, dimension.y, scale.x, scale.y,
 					rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
 					reg.getRegionHeight(), false, false) ;
-			relX += dimension.x ;
+
+			// Draw middle
+			relX = 0 ;
+			reg = regCenter ;
+			for(int i = 0; i < length; i++)
+			{
+				batch.draw(reg.getTexture(), position.x + relX, position.y + relY,
+						origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y,
+						rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
+						reg.getRegionHeight(), false, false) ;
+				relX += dimension.x ;
+			}
+
+			// Draw right edge
+			reg = regRight ;
+			batch.draw(reg.getTexture(), position.x + relX, position.y + relY,
+					origin.x + dimension.x / 8, origin.y, dimension.x / 4, dimension.y, scale.x, scale.y,
+					rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
+					reg.getRegionHeight(), false, false) ;
+
+			batch.setColor(Color.WHITE) ;
 		}
+		else
+		{
+			TextureRegion reg = null ;
 
-		// Draw right edge
-		reg = regRight ;
-		batch.draw(reg.getTexture(), position.x + relX, position.y + relY,
-				origin.x + dimension.x / 8, origin.y, dimension.x / 4, dimension.y, scale.x, scale.y,
-				rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
-				reg.getRegionHeight(), false, false) ;
+			float relX = 0 ;
+			float relY = -0.75f ;
 
+			// Draw left edge
+			reg = regLeft ;
+			relX -= dimension.x / 4 ;
+			batch.draw(reg.getTexture(), position.x + relX, position.y + relY,
+					origin.x, origin.y, dimension.x / 4, dimension.y, scale.x, scale.y,
+					rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
+					reg.getRegionHeight(), false, false) ;
+
+			// Draw middle
+			relX = 0 ;
+			reg = regCenter ;
+			for(int i = 0; i < length; i++)
+			{
+
+				batch.draw(reg.getTexture(), position.x + relX, position.y + relY,
+						origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y,
+						rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
+						reg.getRegionHeight(), false, false) ;
+				relX += dimension.x ;
+			}
+
+			// Draw right edge
+			reg = regRight ;
+			batch.draw(reg.getTexture(), position.x + relX, position.y + relY,
+					origin.x + dimension.x / 8, origin.y, dimension.x / 4, dimension.y, scale.x, scale.y,
+					rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
+					reg.getRegionHeight(), false, false) ;
+		}
 	}
 
 	@Override
@@ -123,6 +164,11 @@ public class Ground extends AbstractGameObject
 		{
 			body.setLinearVelocity(body.getLinearVelocity().scl(0.98f));
 		}
+	}
+
+	@Override
+	public void render(SpriteBatch batch)
+	{
 	}
 }
 

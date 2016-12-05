@@ -13,6 +13,7 @@ import com.badlogic.gdx.Gdx ;
 import com.badlogic.gdx.graphics.GL20 ;
 import com.billyharrisongdx.game.game.WorldController ;
 import com.billyharrisongdx.game.game.WorldRenderer ;
+import com.billyharrisongdx.game.util.Constants;
 import com.billyharrisongdx.game.util.GamePreferences ;
 
 public class GameScreen extends AbstractGameScreen
@@ -23,10 +24,16 @@ public class GameScreen extends AbstractGameScreen
 	private WorldRenderer worldRenderer ;
 
 	private boolean paused ;
+	private String levelNum ;
+	private int score ;
+	private int lives ;
 
-	public GameScreen(Game game)
+	public GameScreen(Game game, String levelNum, int score, int lives)
 	{
 		super(game) ;
+		this.levelNum = levelNum ;
+		this.score = score ;
+		this.lives = lives ;
 	}
 
 	@Override
@@ -57,7 +64,7 @@ public class GameScreen extends AbstractGameScreen
 	public void show()
 	{
 		GamePreferences.instance.load() ;
-		worldController = new WorldController(game) ;
+		worldController = new WorldController(game, levelNum, score, lives) ;
 		worldRenderer = new WorldRenderer(worldController) ;
 		Gdx.input.setCatchBackKey(true) ;
 	}

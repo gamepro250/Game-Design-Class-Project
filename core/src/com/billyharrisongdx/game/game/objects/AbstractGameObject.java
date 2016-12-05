@@ -147,6 +147,11 @@ public abstract class AbstractGameObject
 
 	public abstract void render(SpriteBatch batch) ;
 
+	public void render(SpriteBatch batch, boolean slow) {
+		// TODO Auto-generated method stub
+
+	}
+
 }
 
 

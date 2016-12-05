@@ -19,6 +19,7 @@ import com.billyharrisongdx.game.game.objects.Trees ;
 import com.billyharrisongdx.game.game.objects.Volcano ;
 import com.billyharrisongdx.game.game.objects.Ice ;
 import com.billyharrisongdx.game.game.objects.Fire ;
+import com.billyharrisongdx.game.game.objects.Goal;
 import com.billyharrisongdx.game.game.objects.Character ;
 
 public class Level
@@ -34,9 +35,11 @@ public class Level
 	{
 		EMPTY(0, 0, 0), // Black
 		GROUND(0, 255, 0), // Green
+		SLOW_GROUND(0, 255, 255) ,
 		PLAYER_SPAWNPOINT(255, 255, 255), // White
 		FIRE(255, 0, 255), // Purple
-		ICE(255, 255, 0) ; // Yellow
+		ICE(255, 255, 0), // Yellow
+		GOAL(0, 0, 255) ; // Blue
 
 		private int color ;
 
@@ -71,7 +74,9 @@ public class Level
 	}
 		// Objects
 		public Array<Ground> grounds ;
+		public Array<Ground> slowGrounds ;
 		public Character character ;
+		public Goal boat ;
 		public Array<Ice> ice ;
 		public Array<Fire> fire ;
 
@@ -81,6 +86,7 @@ public class Level
 		public LavaOverlay lavaOverlay ;
 		public Volcano volcano ;
 
+		public boolean goalReached = false ;
 
 		/**
 		 * Initiates a level using the input filename
@@ -95,9 +101,11 @@ public class Level
 		{
 			// Player character
 			character = null ;
+			boat = null ;
 
 			// Objects
 			grounds = new Array<Ground>() ;
+			slowGrounds = new Array<Ground>() ;
 			ice = new Array<Ice>() ;
 			fire = new Array<Fire>() ;
 
@@ -110,7 +118,7 @@ public class Level
 				for(int pixelX = 0; pixelX < pixmap.getWidth(); pixelX++)
 				{
 					AbstractGameObject obj = null ;
-					float offsetHeight = 0 ;
+					float offsetHeight = -3f ;
 					// Height grows from bottom to top
 					float baseHeight = pixmap.getHeight() - pixelY ;
 					// Get color of current pixel as 32-bit RGBA value
@@ -124,15 +132,20 @@ public class Level
 					{
 						// Do nothing
 					}
+					// Goal
+					else if(BLOCK_TYPE.GOAL.sameColor(currentPixel))
+					{
+						obj = new Goal() ;
+						obj.position.set(pixelX, baseHeight + offsetHeight) ;
+						boat = (Goal) obj ;
+					}
 					// Ground
 					else if(BLOCK_TYPE.GROUND.sameColor(currentPixel))
 					{
 						if(lastPixel != currentPixel)
 						{
 							obj = new Ground() ;
-							float heightIncreaseFactor = 0.25f ;
-							offsetHeight = -2.5f ;
-							obj.position.set(pixelX, baseHeight * obj.dimension.y * heightIncreaseFactor + offsetHeight) ;
+							obj.position.set(pixelX, baseHeight + offsetHeight) ;
 							grounds.add((Ground) obj) ;
 						}
 						else
@@ -140,28 +153,38 @@ public class Level
 							grounds.get(grounds.size - 1).increaseLength(1) ;
 						}
 					}
+					else if(BLOCK_TYPE.SLOW_GROUND.sameColor(currentPixel))
+					{
+						if(lastPixel != currentPixel)
+						{
+							obj = new Ground() ;
+							obj.position.set(pixelX, baseHeight + offsetHeight) ;
+							slowGrounds.add((Ground) obj) ;
+						}
+						else
+						{
+							slowGrounds.get(slowGrounds.size - 1).increaseLength(1) ;
+						}
+					}
 					// Player spawn point
 					else if(BLOCK_TYPE.PLAYER_SPAWNPOINT.sameColor(currentPixel))
 					{
 						obj = new Character() ;
-						offsetHeight = -3.0f ;
-						obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight) ;
+						obj.position.set(pixelX, baseHeight + offsetHeight); //baseHeight * obj.dimension.y + offsetHeight) ;
 						character = (Character) obj ;
 					}
 					// Fire
 					else if(BLOCK_TYPE.FIRE.sameColor(currentPixel))
 					{
 						obj = new Fire() ;
-						offsetHeight = -1.5f ;
-						obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight) ;
+						obj.position.set(pixelX, baseHeight + offsetHeight) ;//baseHeight * obj.dimension.y + offsetHeight) ;
 						fire.add((Fire) obj);
 					}
 					// Ice
 					else if(BLOCK_TYPE.ICE.sameColor(currentPixel))
 					{
 						obj = new Ice() ;
-						offsetHeight = -1.5f ;
-						obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight) ;
+						obj.position.set(pixelX, baseHeight + offsetHeight) ;// baseHeight * obj.dimension.y + offsetHeight) ;
 						ice.add((Ice) obj) ;
 					}
 					// Unknown object/pixel color
@@ -204,7 +227,12 @@ public class Level
 			// Draw Ground
 			for (Ground ground : grounds)
 			{
-				ground.render(batch) ;
+				ground.render(batch, false) ;
+			}
+
+			for (Ground ground : slowGrounds)
+			{
+				ground.render(batch, true) ;
 			}
 
 			// Draw Ice
@@ -218,11 +246,15 @@ public class Level
 				fire.render(batch) ;
 			}
 
-			//Draw player character
-			character.render(batch) ;
-
+			if(!goalReached)
+			{
+				//Draw player character
+				character.render(batch) ;
+			}
 			// Draw Lava Overlay
 			lavaOverlay.render(batch) ;
+
+			boat.render(batch) ;
 		}
 
 		/**
@@ -231,8 +263,13 @@ public class Level
 		public void update(float deltaTime)
 		{
 			character.update(deltaTime) ;
-
+			boat.update(deltaTime) ;
 			for(Ground ground: grounds)
+			{
+				ground.update(deltaTime) ;
+			}
+
+			for(Ground ground: slowGrounds)
 			{
 				ground.update(deltaTime) ;
 			}
@@ -248,5 +285,6 @@ public class Level
 			}
 
 			mountains.update(deltaTime) ;
+
 		}
 }

@@ -4,10 +4,10 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	options: { down: options-dn, up: options-up }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Image: {
-	background: { drawable: background },
-	logo: { drawable: logo },
-	info: { drawable: info},
-	coins: { drawable: coins },
-	bunny: { drawable: bunny },
+	Volcano: { drawable: Volcano },
+  Ice: { drawable: Ice },
+  Character: { drawable: Character },
+  Platform: { drawable: Platform },
+  Title: { drawable: Title },
 },
 }

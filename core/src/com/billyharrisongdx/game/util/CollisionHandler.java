@@ -13,6 +13,7 @@ import com.billyharrisongdx.game.game.objects.Ice ;
 import com.billyharrisongdx.game.game.objects.Ground ;
 import com.billyharrisongdx.game.game.objects.Character ;
 import com.billyharrisongdx.game.game.objects.Fire ;
+import com.billyharrisongdx.game.game.objects.Goal;
 
 public class CollisionHandler implements ContactListener
 {
@@ -139,6 +140,7 @@ public class CollisionHandler implements ContactListener
     	{
     		world.resetJump() ;
     		world.level.character.grounded = true ;
+    		world.level.character.airborne = false ;
     	}
     	else if (objFixture.getBody().getUserData() instanceof Ice)
     	{
@@ -157,6 +159,10 @@ public class CollisionHandler implements ContactListener
 
     		Fire fire = (Fire)objFixture.getBody().getUserData() ;
     		world.flagForRemoval(fire) ;
+    	}
+    	else if (objFixture.getBody().getUserData() instanceof Goal)
+    	{
+    		world.level.goalReached = true ;
     	}
     }
 

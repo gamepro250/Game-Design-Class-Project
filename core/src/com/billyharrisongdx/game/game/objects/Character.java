@@ -44,6 +44,7 @@ public class Character extends AbstractGameObject
 	public static float timeLeftFirePowerup ;
 	public boolean grounded ;
 	public boolean running ;
+	public boolean airborne ;
 
 	public Character()
 	{
@@ -68,7 +69,7 @@ public class Character extends AbstractGameObject
 		// Bounding box for collision detection
 		bounds.set(0, 0, dimension.x, dimension.y) ;
 		// Set physics values
-        terminalVelocity.set(30.0f, 3f);
+        terminalVelocity.set(30.0f, 3.5f);
         friction.set(0.4f, 0.0f);
 		// View direction
 		viewDirection = VIEW_DIRECTION.RIGHT ;
@@ -90,6 +91,7 @@ public class Character extends AbstractGameObject
 		if(pickedUp)
 		{
 			timeLeftFirePowerup = Constants.ITEM_FIRE_POWERUP_DURATION ;
+			
 			//terminalVelocity.x = 6 ;
 		}
 	}
@@ -111,13 +113,9 @@ public class Character extends AbstractGameObject
     {
         super.update(deltaTime);
 
-/*        if(walking)
-        {
-        	setAnimation(runAnim) ;
-        }
-*/
         if (timeLeftFirePowerup > 0)
         {
+        	
             timeLeftFirePowerup -= deltaTime;
             if (timeLeftFirePowerup < 0)
             {
@@ -128,9 +126,9 @@ public class Character extends AbstractGameObject
         }
 
         // Draws the particle effect when the player character is on the ground
-        if(grounded)
+        if(grounded && hasFirePowerup)
         {
-            lavaDust.setPosition(body.getPosition().x + dimension.x / 2, body.getPosition().y) ;
+            lavaDust.setPosition(body.getPosition().x + dimension.x / 2, body.getPosition().y + .1f) ;
 
         	lavaDust.start() ;
         }
@@ -157,10 +155,10 @@ public class Character extends AbstractGameObject
 		batch.setColor(CharacterSkin.values()[GamePreferences.instance.charSkin].getColor()) ;
 
 		// Set special color when game object has a fire power-up
-		if(hasFirePowerup)
-		{
-			batch.setColor(1.0f, 0.8f, 0.0f, 1.0f) ;
-		}
+//		if(hasFirePowerup)
+//		{
+//			batch.setColor(1.0f, 0.8f, 0.0f, 1.0f) ;
+//		}
 
 		// Draw image
 		if(running && grounded)

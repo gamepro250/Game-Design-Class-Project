@@ -1,68 +1,68 @@
 
-canyonbunny-ui.pack.png
+mygame-ui.pack.png
 size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-background
+Character
   rotate: false
-  xy: 2, 482
-  size: 801, 481
-  orig: 801, 481
+  xy: 274, 463
+  size: 72, 76
+  orig: 72, 76
   offset: 0, 0
   index: -1
-bunny
+Ice
   rotate: false
-  xy: 2, 12
-  size: 269, 468
-  orig: 269, 468
+  xy: 956, 990
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
-coins
+Platform
   rotate: false
-  xy: 273, 123
-  size: 510, 357
-  orig: 510, 357
+  xy: 2, 2
+  size: 85, 96
+  orig: 85, 96
   offset: 0, 0
   index: -1
-info
+Title
   rotate: false
-  xy: 615, 39
-  size: 329, 82
-  orig: 329, 82
+  xy: 2, 404
+  size: 270, 135
+  orig: 270, 135
   offset: 0, 0
   index: -1
-logo
+Volcano
   rotate: false
-  xy: 273, 2
-  size: 340, 119
-  orig: 340, 119
+  xy: 2, 541
+  size: 800, 481
+  orig: 800, 481
   offset: 0, 0
   index: -1
 options-dn
   rotate: false
-  xy: 805, 813
+  xy: 804, 872
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 options-up
   rotate: false
-  xy: 805, 661
+  xy: 2, 252
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 play-dn
   rotate: false
-  xy: 805, 509
+  xy: 804, 720
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 play-up
   rotate: false
-  xy: 805, 357
+  xy: 2, 100
   size: 150, 150
   orig: 150, 150
   offset: 0, 0

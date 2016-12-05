@@ -202,6 +202,7 @@ public class WorldRenderer {
 		}
 		// Draw game over text
 		renderGuiGameOverMessage(batch) ;
+		renderGuiNextLevelMessage(batch) ;
 
 		batch.end() ;
 	}
@@ -218,6 +219,26 @@ public class WorldRenderer {
 			BitmapFont fontGameOver = Assets.instance.fonts.defaultBig ;
 			fontGameOver.setColor(1, 0.75f, 0.25f, 1) ;
 			fontGameOver.draw(batch, "GAME OVER", x, y, 0, Align.center, false) ;
+			fontGameOver.setColor(1, 1, 1, 1) ;
+		}
+	}
+
+	private void renderGuiNextLevelMessage(SpriteBatch batch)
+	{
+		float x = cameraGUI.viewportWidth / 2 ;
+		float y = cameraGUI.viewportHeight / 2 ;
+		if(worldController.level.goalReached && worldController.levelNum == Constants.LEVEL_01)
+		{
+			BitmapFont fontGameOver = Assets.instance.fonts.defaultBig ;
+			fontGameOver.setColor(1, 0.75f, 0.25f, 1) ;
+			fontGameOver.draw(batch, "Level Complete", x, y, 0, Align.center, false) ;
+			fontGameOver.setColor(1, 1, 1, 1) ;
+		}
+		else if(worldController.level.goalReached && worldController.levelNum == Constants.LEVEL_02)
+		{
+			BitmapFont fontGameOver = Assets.instance.fonts.defaultBig ;
+			fontGameOver.setColor(1, 0.75f, 0.25f, 1) ;
+			fontGameOver.draw(batch, "Congratulations!", x, y, 0, Align.center, false) ;
 			fontGameOver.setColor(1, 1, 1, 1) ;
 		}
 	}

@@ -19,9 +19,11 @@ import com.billyharrisongdx.game.util.Constants ;
 import com.billyharrisongdx.game.game.objects.Ground ;
 import com.billyharrisongdx.game.game.objects.Ice ;
 import com.billyharrisongdx.game.game.objects.Fire ;
+import com.billyharrisongdx.game.game.objects.Goal;
 import com.billyharrisongdx.game.game.objects.AbstractGameObject;
 import com.billyharrisongdx.game.game.objects.Character ;
 import com.billyharrisongdx.game.screens.MenuScreen ;
+import com.billyharrisongdx.game.screens.GameScreen ;
 import com.badlogic.gdx.Game ;
 import com.billyharrisongdx.game.util.AudioManager ;
 import com.badlogic.gdx.math.Vector2 ;
@@ -49,24 +51,27 @@ public class WorldController extends InputAdapter implements Disposable
 	public boolean playJump = true ;
 	public World world ;
 	public Array<AbstractGameObject> objectsToRemove ;
+	public String levelNum ;
 
 	private Game game ;
 	private float timeLeftGameOverDelay ;	// Delay between losing last life and game restarting
+	private float levelEndDelay ;
 
-	public WorldController(Game game)
+	public WorldController(Game game, String levelNum, int score, int lives)
 	{
 		this.game = game ;
-		init() ;
+		this.levelNum = levelNum ;
+		init(levelNum, score, lives) ;
 	}
 
 	/**
 	 * Loads level, starts score at 0 and has camera follow bunny
 	 */
-	private void initLevel()
+	private void initLevel(String levelNum)
 	{
-		score = 0 ; // Initiates score to 0
+		score = this.score ; // Initiates score to 0
 		scoreVisual = score ;
-		level = new Level(Constants.LEVEL_01) ; // Initiates level using LEVEL_01 map
+		level = new Level(levelNum) ; // Initiates level using LEVEL_01 map
 		cameraHelper.setTarget(level.character) ;
 		initPhysics() ; // Initializes the Box2D physics world
 	}
@@ -100,6 +105,26 @@ public class WorldController extends InputAdapter implements Disposable
 			polygonShape.setAsBox(ground.bounds.width / 2.0f, ground.bounds.height / 2.0f, origin, 0) ;
 			FixtureDef fixtureDef = new FixtureDef() ;
 			fixtureDef.shape = polygonShape ;
+			fixtureDef.friction = 0.5f ;
+			body.createFixture(fixtureDef) ;
+			polygonShape.dispose() ;
+		}
+
+		for(Ground ground : level.slowGrounds)
+		{
+			BodyDef bodyDef = new BodyDef() ;
+			bodyDef.type = BodyType.KinematicBody ;
+			bodyDef.position.set(ground.position) ;
+				Body body = world.createBody(bodyDef) ;
+			body.setUserData(ground);
+			ground.body = body ;
+			PolygonShape polygonShape = new PolygonShape() ;
+			origin.x = ground.bounds.width / 2.0f ;
+			origin.y = ground.bounds.height / 2.0f - 0.25f ;
+			polygonShape.setAsBox(ground.bounds.width / 2.0f, ground.bounds.height / 2.0f, origin, 0) ;
+			FixtureDef fixtureDef = new FixtureDef() ;
+			fixtureDef.shape = polygonShape ;
+			fixtureDef.friction = 0.75f ;
 			body.createFixture(fixtureDef) ;
 			polygonShape.dispose() ;
 		}
@@ -141,13 +166,31 @@ public class WorldController extends InputAdapter implements Disposable
 			PolygonShape polygonShape2 = new PolygonShape() ;
 			origin.x = ice.bounds.width / 2.0f ;
 			origin.y = ice.bounds.height / 2.0f ;
-			polygonShape.setAsBox(ice.bounds.width / 2.0f, ice.bounds.height / 2.0f, origin, 0) ;
+			polygonShape2.setAsBox(ice.bounds.width / 2.0f, ice.bounds.height / 2.0f, origin, 0) ;
 			FixtureDef fixtureDef2 = new FixtureDef() ;
 			fixtureDef2.shape = polygonShape2 ;
 			fixtureDef2.density = 5 ;
+			fixtureDef2.isSensor = true ;
 			body2.createFixture(fixtureDef2) ;
 			polygonShape2.dispose() ;
 		}
+
+		Goal boat = level.boat ;
+		BodyDef bodyDef4 = new BodyDef() ;
+		bodyDef4.type = BodyType.KinematicBody ;
+		bodyDef4.position.set(boat.position) ;
+			Body body4 = world.createBody(bodyDef4) ;
+		body4.setUserData(boat) ;
+		boat.body = body4 ;
+		PolygonShape polygonShape4 = new PolygonShape() ;
+		origin.x = boat.bounds.width / 2.0f ;
+		origin.y = boat.bounds.height / 2.0f ;
+		polygonShape4.setAsBox(boat.bounds.width / 2.0f, boat.bounds.height / 2.0f, origin, 0) ;
+		FixtureDef fixtureDef4 = new FixtureDef() ;
+		fixtureDef4.shape = polygonShape4 ;
+		body4.createFixture(fixtureDef4) ;
+		polygonShape4.dispose() ;
+
 
 		// Create box2d body for fire collectibles
 		for(Fire fire: level.fire)
@@ -163,24 +206,29 @@ public class WorldController extends InputAdapter implements Disposable
 			origin.y = fire.bounds.height / 2.0f ;
 			polygonShape3.setAsBox(fire.bounds.width / 2.0f, fire.bounds.height / 2.0f, origin, 0) ;
 			FixtureDef fixtureDef3 = new FixtureDef() ;
+			fixtureDef3.isSensor = true ;
 			fixtureDef3.shape = polygonShape3 ;
 			body3.createFixture(fixtureDef3) ;
 			polygonShape3.dispose() ;
 		}
+
 	}
 
 	/**
 	 * Loads camera, sets initial game over delay, and starts with 3 extra lives
 	 */
-	private void init()
+	private void init(String levelNum, int score, int lives)
 	{
 		objectsToRemove = new Array<AbstractGameObject>();
 		Gdx.input.setInputProcessor(this) ;
 		cameraHelper = new CameraHelper() ;
-		lives = Constants.LIVES_START ; // Starts level with 3 lives
-		livesVisual = lives ;
+		this.score = score ;
+		this.scoreVisual = score ;
+		this.lives = lives ; // Starts level with 3 lives
+		this.livesVisual = lives ;
 		timeLeftGameOverDelay = 0 ;
-		initLevel() ;
+		levelEndDelay = Constants.LEVEL_END_DELAY ;
+		initLevel(levelNum) ;
 	}
 	/**
 	 * Updates the games state based on the deltaTime
@@ -223,6 +271,22 @@ public class WorldController extends InputAdapter implements Disposable
 				backToMenu() ;
 			}
 		}
+		else if(level.goalReached)
+		{
+			levelEndDelay -= deltaTime ;
+			if(levelEndDelay < 0)
+			{
+				if(levelNum.equals(Constants.LEVEL_01))
+				{
+					changeLevel(Constants.LEVEL_02) ;
+				}
+				else if(levelNum.equals(Constants.LEVEL_02))
+				{
+					backToMenu() ;
+				}
+
+			}
+		}
 		else
 		{
 			handleInputGame(deltaTime) ;
@@ -239,7 +303,8 @@ public class WorldController extends InputAdapter implements Disposable
 			}
 			else
 			{
-				initLevel() ;
+				score = 0 ;
+				initLevel(levelNum) ;
 			}
 		}
 		if(livesVisual > lives)
@@ -302,7 +367,7 @@ public class WorldController extends InputAdapter implements Disposable
 		//Reset game world
 		if (keycode == Keys.R)
 		{
-			init() ;
+			init(Constants.LEVEL_01, 0, Constants.LIVES_START) ;
 			Gdx.app.debug(TAG, "Game world was reset") ;
 		}
 		// Toggle camera follow
@@ -318,6 +383,10 @@ public class WorldController extends InputAdapter implements Disposable
 		else if(keycode == Keys.LEFT || keycode == Keys.RIGHT)
 		{
 			level.character.running = false ;
+		}
+		else if(keycode == Keys.SPACE)
+		{
+			level.character.airborne = true ;
 		}
 		return false ;
 	}
@@ -347,7 +416,8 @@ public class WorldController extends InputAdapter implements Disposable
 				level.character.running = true ;
 			}
 			// Character Jump
-			if(Gdx.input.isTouched() || Gdx.input.isKeyPressed(Keys.SPACE))
+
+			if((Gdx.input.isTouched() || Gdx.input.isKeyPressed(Keys.SPACE)) && level.character.airborne == false)
 			{
 				Vector2 vel = level.character.body.getLinearVelocity() ;
 
@@ -419,9 +489,26 @@ public class WorldController extends InputAdapter implements Disposable
 		game.setScreen(new MenuScreen(game)) ;
 	}
 
+	private void changeLevel(String levelNum)
+	{
+		// Advance to next level
+		game.setScreen(new GameScreen(game, levelNum, score, lives)) ;
+	}
+
 	@Override
 	public void dispose()
 	{
 		if(world != null) world.dispose() ;
+	}
+
+	public void setScore(int score)
+	{
+		this.score = score ;
+		this.scoreVisual = score ;
+	}
+
+	public int getScore()
+	{
+		return this.score ;
 	}
 }

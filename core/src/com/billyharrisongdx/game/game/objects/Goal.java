@@ -13,16 +13,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion ;
 import com.billyharrisongdx.game.game.Assets ;
 import com.badlogic.gdx.math.MathUtils ;
 
-public class Fire extends AbstractGameObject
+public class Goal extends AbstractGameObject
 {
 	/**
 	 * Holds Fire texture region and collected status
 	 */
-	private TextureRegion regFire ;
+	private TextureRegion regGoal ;
 
-	public boolean collected ;
+	public int score ;
 
-	public Fire()
+	public Goal()
 	{
 		init() ;
 	}
@@ -33,15 +33,12 @@ public class Fire extends AbstractGameObject
 	private void init()
 	{
 
-		dimension.set(0.5f, 0.5f) ;
+		dimension.set(2.0f, 2.0f) ;
 
-		setAnimation(Assets.instance.fire.animFire) ;
-		stateTime = MathUtils.random(0.0f, 1.0f) ;
+		regGoal = Assets.instance.boat.boat ;
 
 		// Set bounding box for collision detection
-		bounds.set(0, 0, dimension.x, dimension.y) ;
-
-		collected = false ;
+		bounds.set(0, 0, dimension.x, dimension.y * 10) ;
 	}
 
 	/**
@@ -49,20 +46,10 @@ public class Fire extends AbstractGameObject
 	 */
 	public void render(SpriteBatch batch)
 	{
-		if(collected) return ;
-
 		TextureRegion reg = null ;
-		reg = animation.getKeyFrame(stateTime, true) ;
+		reg = regGoal ;
 		batch.draw(reg.getTexture(), position.x, position.y, origin.x, origin.y,
 				dimension.x, dimension.y,scale.x, scale.y,rotation,reg.getRegionX(),
-				reg.getRegionY(), reg.getRegionWidth(),reg.getRegionHeight(), false, false) ;
-	}
-
-	/**
-	 * Returns Feather point value
-	 */
-	public static int getScore()
-	{
-		return 250 ;
+				reg.getRegionY(), reg.getRegionWidth(),reg.getRegionHeight(), true, false) ;
 	}
 }
