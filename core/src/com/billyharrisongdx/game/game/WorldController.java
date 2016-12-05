@@ -16,6 +16,7 @@ import com.billyharrisongdx.game.util.CameraHelper;
 import com.billyharrisongdx.game.util.CollisionHandler;
 import com.badlogic.gdx.utils.Array;
 import com.billyharrisongdx.game.util.Constants ;
+import com.billyharrisongdx.game.util.GamePreferences;
 import com.billyharrisongdx.game.game.objects.Ground ;
 import com.billyharrisongdx.game.game.objects.Ice ;
 import com.billyharrisongdx.game.game.objects.Fire ;
@@ -45,6 +46,7 @@ public class WorldController extends InputAdapter implements Disposable
 	public Level level ;
 	public int lives ;
 	public int score ;
+	public int lastLevelScore ;
 	public float livesVisual ;
 	public float scoreVisual ;
 	public float timeHeld ;
@@ -52,11 +54,12 @@ public class WorldController extends InputAdapter implements Disposable
 	public World world ;
 	public Array<AbstractGameObject> objectsToRemove ;
 	public String levelNum ;
+	public boolean showScores = false ;
+	GamePreferences prefs = GamePreferences.instance ;
 
 	private Game game ;
 	private float timeLeftGameOverDelay ;	// Delay between losing last life and game restarting
 	private float levelEndDelay ;
-
 	public WorldController(Game game, String levelNum, int score, int lives)
 	{
 		this.game = game ;
@@ -69,7 +72,6 @@ public class WorldController extends InputAdapter implements Disposable
 	 */
 	private void initLevel(String levelNum)
 	{
-		score = this.score ; // Initiates score to 0
 		scoreVisual = score ;
 		level = new Level(levelNum) ; // Initiates level using LEVEL_01 map
 		cameraHelper.setTarget(level.character) ;
@@ -223,6 +225,7 @@ public class WorldController extends InputAdapter implements Disposable
 		Gdx.input.setInputProcessor(this) ;
 		cameraHelper = new CameraHelper() ;
 		this.score = score ;
+		this.lastLevelScore = score ;
 		this.scoreVisual = score ;
 		this.lives = lives ; // Starts level with 3 lives
 		this.livesVisual = lives ;
@@ -235,7 +238,6 @@ public class WorldController extends InputAdapter implements Disposable
 	 */
 	public void update(float deltaTime)
 	{
-
 		if (objectsToRemove.size > 0)
 		{
 			for (AbstractGameObject obj : objectsToRemove)
@@ -282,6 +284,20 @@ public class WorldController extends InputAdapter implements Disposable
 				}
 				else if(levelNum.equals(Constants.LEVEL_02))
 				{
+					for(int i=0;i<10;i++)
+					{
+						int prevScore = 0 ;
+
+						if(this.score > prefs.getHighScores(i))
+						{
+
+							prevScore = prefs.getHighScores(i) ;
+							prefs.setHighScore(this.score, i);
+
+							score = prevScore ;
+						}
+					}
+
 					backToMenu() ;
 				}
 
@@ -303,7 +319,7 @@ public class WorldController extends InputAdapter implements Disposable
 			}
 			else
 			{
-				score = 0 ;
+				score = lastLevelScore ;
 				initLevel(levelNum) ;
 			}
 		}
@@ -443,6 +459,14 @@ public class WorldController extends InputAdapter implements Disposable
 
 					timeHeld += deltaTime ;
 				}
+			}
+			if(Gdx.input.isKeyPressed(Keys.H))
+			{
+				showScores = true ;
+			}
+			if(Gdx.input.isKeyPressed(Keys.J))
+			{
+				showScores = false ;
 			}
 		}
 	}

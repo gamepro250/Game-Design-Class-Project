@@ -29,6 +29,7 @@ public class WorldRenderer {
 	private OrthographicCamera cameraGUI ; // Initialize camera to display the GUI
 	private SpriteBatch batch ;
 	private WorldController worldController ;
+	GamePreferences prefs = GamePreferences.instance ;
 
 	private static final boolean DEBUG_DRAW_BOX2D_WORLD = false ;
 	private Box2DDebugRenderer b2debugRenderer ;
@@ -203,6 +204,7 @@ public class WorldRenderer {
 		// Draw game over text
 		renderGuiGameOverMessage(batch) ;
 		renderGuiNextLevelMessage(batch) ;
+		renderGuiHighScoreList(batch) ;
 
 		batch.end() ;
 	}
@@ -239,6 +241,27 @@ public class WorldRenderer {
 			BitmapFont fontGameOver = Assets.instance.fonts.defaultBig ;
 			fontGameOver.setColor(1, 0.75f, 0.25f, 1) ;
 			fontGameOver.draw(batch, "Congratulations!", x, y, 0, Align.center, false) ;
+			fontGameOver.setColor(1, 1, 1, 1) ;
+		}
+	}
+
+	private void renderGuiHighScoreList(SpriteBatch batch)
+	{
+		float x = cameraGUI.viewportWidth / 2 - 200 ;
+		float y = cameraGUI.viewportHeight / 2 - 200 ;
+
+		if(worldController.showScores)
+		{
+			BitmapFont fontGameOver = Assets.instance.fonts.defaultBig ;
+			fontGameOver.setColor(1, 0.75f, 0.25f, 1) ;
+			fontGameOver.draw(batch, "HIGH SCORES", x, y, 0, Align.center, false) ;
+
+			for(int i=0;i<10;i++)
+			{
+				int j = i + 1 ;
+				fontGameOver.draw(batch, "#" + j + ": " + prefs.getHighScores(i), x, y + (25*j), 0, Align.center, false) ;
+			}
+
 			fontGameOver.setColor(1, 1, 1, 1) ;
 		}
 	}
